@@ -1,0 +1,51 @@
+"""PM Cockpit core — pure domain types (C1). Re-exports the public API."""
+
+from core.enums import (
+    ALLOWED_ACTION_TRANSITIONS,
+    ActionStatus,
+    EventKind,
+    GateOutcome,
+    ProjectStatus,
+    SignalKind,
+    SourceType,
+)
+from core.errors import (
+    CoreError,
+    CycleCloseError,
+    DataError,
+    EvidenceConflict,
+    GateMissing,
+    IntegrityError,
+    InvalidSlug,
+    MissingFileError,
+    OwnerError,
+    PathEscape,
+    PdfError,
+    ServiceError,
+    UnknownProjectData,
+    UnknownProjectService,
+)
+
+__all__ = [
+    "ALLOWED_ACTION_TRANSITIONS",
+    "ActionStatus",
+    "EventKind",
+    "GateOutcome",
+    "ProjectStatus",
+    "SignalKind",
+    "SourceType",
+    "CoreError",
+    "CycleCloseError",
+    "DataError",
+    "EvidenceConflict",
+    "GateMissing",
+    "IntegrityError",
+    "InvalidSlug",
+    "MissingFileError",
+    "OwnerError",
+    "PathEscape",
+    "PdfError",
+    "ServiceError",
+    "UnknownProjectData",
+    "UnknownProjectService",
+]
