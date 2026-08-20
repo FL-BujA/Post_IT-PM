@@ -47,47 +47,58 @@ class ServiceError(CoreError):
 
 
 class UnknownProjectData(DataError):
-    code = "unknown_project"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="unknown_project")
 
 
 class InvalidSlug(ServiceError):
-    code = "invalid_slug"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="invalid_slug")
 
 
 class PathEscape(ServiceError):
-    code = "path_escape"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="path_escape")
 
 
 class OwnerError(ServiceError):
-    code = "invalid_owner"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="invalid_owner")
 
 
 class UnknownProjectService(ServiceError):
-    code = "unknown_project"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="unknown_project")
 
 
 class EvidenceConflict(ServiceError):
-    code = "evidence_conflict"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="evidence_conflict")
 
 
 class GateMissing(ServiceError):
-    code = "gate_missing"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="gate_missing")
 
 
 class CycleCloseError(ServiceError):
-    code = "cycle_close"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="cycle_close")
 
 
 class IntegrityError(ServiceError):
-    code = "integrity"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="integrity")
 
 
 class MissingFileError(ServiceError):
-    code = "missing_file"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="missing_file")
 
 
 class PdfError(ServiceError):
-    code = "pdf_error"
+    def __init__(self, message: str) -> None:
+        super().__init__(message, code="pdf_error")
 
 
 __all__ = [
