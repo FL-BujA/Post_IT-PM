@@ -5,14 +5,14 @@ placeholder slots frozen from card P-06."""
 from data._slots import (
     ActionRepoSlot,
     CharterRepoSlot,
-    CycleRepoSlot,
     DecisionRepoSlot,
     EvidenceRepoSlot,
-    GateRepoSlot,
     IntegritySlot,
     SearchSlot,
 )
+from data.cycles import CycleRepo
 from data.db import BUSY_TIMEOUT_MS, JOURNAL_MODE, DataKit
+from data.gates import GateRepo
 from data.events import EventRepo
 from data.migrate import FTS_TABLE, INDEXES, META_TABLE, TABLES, migrate
 from data.projects import ProjectRepo
@@ -41,7 +41,7 @@ __all__ = [
     "CharterRepoSlot",
     "CharterRow",
     "CycleItemRow",
-    "CycleRepoSlot",
+    "CycleRepo",
     "CycleRow",
     "DataKit",
     "DecisionRepoSlot",
@@ -51,7 +51,7 @@ __all__ = [
     "EvidenceRepoSlot",
     "EvidenceRow",
     "GateItemRow",
-    "GateRepoSlot",
+    "GateRepo",
     "GateRow",
     "IntegritySlot",
     "ProjectRepo",

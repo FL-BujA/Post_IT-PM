@@ -20,14 +20,14 @@ from typing import Any, Self
 from data._slots import (
     ActionRepoSlot,
     CharterRepoSlot,
-    CycleRepoSlot,
     DecisionRepoSlot,
     EvidenceRepoSlot,
-    GateRepoSlot,
     IntegritySlot,
     SearchSlot,
 )
+from data.cycles import CycleRepo
 from data.events import EventRepo
+from data.gates import GateRepo
 from data.projects import ProjectRepo
 
 #: Frozen connection settings (C2.5).
@@ -60,13 +60,16 @@ class DataKit:
         self.projects = ProjectRepo(self)
         self.events = EventRepo(self)
 
+        # C2.1 assembly (P-07): gates + cycles slots filled in — invariant
+        # I3 lives here (a cycle cannot close without a gate outcome).
+        self.gates = GateRepo(self)
+        self.cycles = CycleRepo(self)
+
         # C2.1 assembly (P-06): remaining slots — typed placeholders.
-        self.cycles: CycleRepoSlot = CycleRepoSlot()
         self.charter: CharterRepoSlot = CharterRepoSlot()
         self.evidence: EvidenceRepoSlot = EvidenceRepoSlot()
         self.decisions: DecisionRepoSlot = DecisionRepoSlot()
         self.actions: ActionRepoSlot = ActionRepoSlot()
-        self.gates: GateRepoSlot = GateRepoSlot()
         self.search: SearchSlot = SearchSlot()
         self.integrity: IntegritySlot = IntegritySlot()
 

@@ -124,6 +124,8 @@ CREATE TABLE cycle (
     id            INTEGER PRIMARY KEY,
     project_code  TEXT NOT NULL REFERENCES project(code),
     name          TEXT NOT NULL,
+    gate_id       INTEGER REFERENCES gate(id),
+    closed_at     TEXT,
     validated     INTEGER NOT NULL DEFAULT 0,
     validated_at  TEXT,
     created_at    TEXT NOT NULL
@@ -144,6 +146,8 @@ CREATE TABLE gate (
     event_id      INTEGER NOT NULL REFERENCES event(id),
     name          TEXT NOT NULL,
     outcome       TEXT NOT NULL,
+    planned_date  TEXT,
+    actual_date   TEXT,
     created_at    TEXT NOT NULL
 );
 

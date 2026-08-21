@@ -37,12 +37,10 @@ from data.migrate import migrate
 from data.projects import ProjectRepo
 
 SLOT_NAMES = (
-    "cycles",
     "charter",
     "evidence",
     "decisions",
     "actions",
-    "gates",
     "search",
     "integrity",
 )

@@ -276,6 +276,8 @@ C20_COLUMNS: dict[type, tuple[str, ...]] = {
         "id",
         "project_code",
         "name",
+        "gate_id",
+        "closed_at",
         "validated",
         "validated_at",
         "created_at",
@@ -294,6 +296,8 @@ C20_COLUMNS: dict[type, tuple[str, ...]] = {
         "event_id",
         "name",
         "outcome",
+        "planned_date",
+        "actual_date",
         "created_at",
     ),
     GateItemRow: (

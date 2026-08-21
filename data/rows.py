@@ -192,6 +192,8 @@ class CycleRow:
     id: int
     project_code: str
     name: str
+    gate_id: int | None
+    closed_at: str | None
     validated: int
     validated_at: str | None
     created_at: str
@@ -201,6 +203,8 @@ class CycleRow:
             "id": self.id,
             "project_code": self.project_code,
             "name": self.name,
+            "gate_id": self.gate_id,
+            "closed_at": self.closed_at,
             "validated": self.validated,
             "validated_at": self.validated_at,
             "created_at": self.created_at,
@@ -238,6 +242,8 @@ class GateRow:
     event_id: int
     name: str
     outcome: str
+    planned_date: str | None
+    actual_date: str | None
     created_at: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -247,6 +253,8 @@ class GateRow:
             "event_id": self.event_id,
             "name": self.name,
             "outcome": self.outcome,
+            "planned_date": self.planned_date,
+            "actual_date": self.actual_date,
             "created_at": self.created_at,
         }
 
