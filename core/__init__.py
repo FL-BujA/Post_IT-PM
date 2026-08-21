@@ -2,8 +2,12 @@
 
 from core.paths import (
     ALLOWED_BUCKETS,
+    DATE_RE,
     FILENAME_RE,
     MAX_STEM_LEN,
+    PROJECT_CODE_RE,
+    SLUG_RE,
+    STEM_RE,
     normalize_relpath,
     slugify,
 )
@@ -33,11 +37,17 @@ from core.errors import (
     UnknownProjectData,
     UnknownProjectService,
 )
+from core.time import now_utc
+from core.hash import A4_PAGE_PT, SHORT_ID_LEN, sha256_bytes, sha256_file, short_id
 
 __all__ = [
     "ALLOWED_BUCKETS",
+    "DATE_RE",
     "FILENAME_RE",
     "MAX_STEM_LEN",
+    "PROJECT_CODE_RE",
+    "SLUG_RE",
+    "STEM_RE",
     "normalize_relpath",
     "slugify",
     "ALLOWED_REF_TABLES",
@@ -65,4 +75,10 @@ __all__ = [
     "ServiceError",
     "UnknownProjectData",
     "UnknownProjectService",
+    "now_utc",
+    "A4_PAGE_PT",
+    "SHORT_ID_LEN",
+    "sha256_bytes",
+    "sha256_file",
+    "short_id",
 ]

@@ -1,0 +1,47 @@
+core/enums.py:API payloads use these exact lowercase strings. All enums subclass ``str``
+core/enums.py:class ProjectStatus(str, Enum):
+core/enums.py:class EventKind(str, Enum):
+core/enums.py:class ActionStatus(str, Enum):
+core/enums.py:class GateOutcome(str, Enum):
+core/enums.py:class SourceType(str, Enum):
+core/enums.py:class SignalKind(str, Enum):
+core/errors.py:class CoreError(Exception):
+core/errors.py:    def __init__(self, message: str, *, code: str | None = None) -> None:
+core/errors.py:class DataError(CoreError):
+core/errors.py:class ServiceError(CoreError):
+core/errors.py:class UnknownProjectData(DataError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class InvalidSlug(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class PathEscape(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class OwnerError(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class UnknownProjectService(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class EvidenceConflict(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class GateMissing(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class CycleCloseError(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class IntegrityError(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class MissingFileError(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/errors.py:class PdfError(ServiceError):
+core/errors.py:    def __init__(self, message: str) -> None:
+core/hash.py:def sha256_bytes(data: bytes) -> str:
+core/hash.py:def sha256_file(path: str | os.PathLike) -> str:
+core/hash.py:def short_id() -> str:
+core/paths.py:# Frozen regexes. Note: no character class anywhere accepts a backslash.
+core/paths.py:def _valid_date(date: str) -> bool:
+core/paths.py:def slugify(name: str, date: str, ext: str) -> str:
+core/paths.py:def normalize_relpath(relpath: str) -> str:
+core/time.py:def now_utc() -> datetime:
+core/values.py:class Owner:
+core/values.py:    def __init__(self, name: str) -> None:
+core/values.py:class PreparedFor:
+core/values.py:    def __init__(self, value: str) -> None:
+core/values.py:class EventRef:
+core/values.py:    def __init__(
