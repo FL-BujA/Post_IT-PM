@@ -18,14 +18,14 @@ from collections.abc import Callable
 from typing import Any, Self
 
 from data._slots import (
-    ActionRepoSlot,
     CharterRepoSlot,
     DecisionRepoSlot,
-    EvidenceRepoSlot,
     IntegritySlot,
     SearchSlot,
 )
+from data.actions import ActionRepo
 from data.cycles import CycleRepo
+from data.evidence import EvidenceRepo
 from data.events import EventRepo
 from data.gates import GateRepo
 from data.projects import ProjectRepo
@@ -65,11 +65,14 @@ class DataKit:
         self.gates = GateRepo(self)
         self.cycles = CycleRepo(self)
 
+        # C2.1 assembly (P-08): actions + evidence slots filled in —
+        # invariant I4 lives in data.actions (done->open reopens).
+        self.actions = ActionRepo(self)
+        self.evidence = EvidenceRepo(self)
+
         # C2.1 assembly (P-06): remaining slots — typed placeholders.
         self.charter: CharterRepoSlot = CharterRepoSlot()
-        self.evidence: EvidenceRepoSlot = EvidenceRepoSlot()
         self.decisions: DecisionRepoSlot = DecisionRepoSlot()
-        self.actions: ActionRepoSlot = ActionRepoSlot()
         self.search: SearchSlot = SearchSlot()
         self.integrity: IntegritySlot = IntegritySlot()
 

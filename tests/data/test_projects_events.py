@@ -38,9 +38,7 @@ from data.projects import ProjectRepo
 
 SLOT_NAMES = (
     "charter",
-    "evidence",
     "decisions",
-    "actions",
     "search",
     "integrity",
 )
