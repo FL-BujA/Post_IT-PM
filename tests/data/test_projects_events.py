@@ -40,7 +40,6 @@ SLOT_NAMES = (
     "charter",
     "decisions",
     "search",
-    "integrity",
 )
 
 

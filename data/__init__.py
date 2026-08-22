@@ -14,6 +14,7 @@ from data.cycles import CycleRepo
 from data.db import BUSY_TIMEOUT_MS, JOURNAL_MODE, DataKit
 from data.gates import GateRepo
 from data.events import EventRepo
+from data.integrity import IntegrityReport, IntegrityService
 from data.migrate import FTS_TABLE, INDEXES, META_TABLE, TABLES, migrate
 from data.projects import ProjectRepo
 from data.rows import (
@@ -53,6 +54,8 @@ __all__ = [
     "GateItemRow",
     "GateRepo",
     "GateRow",
+    "IntegrityReport",
+    "IntegrityService",
     "IntegritySlot",
     "ProjectRepo",
     "ProjectRow",

@@ -28,6 +28,7 @@ from data.cycles import CycleRepo
 from data.evidence import EvidenceRepo
 from data.events import EventRepo
 from data.gates import GateRepo
+from data.integrity import IntegrityService
 from data.projects import ProjectRepo
 
 #: Frozen connection settings (C2.5).
@@ -74,7 +75,7 @@ class DataKit:
         self.charter: CharterRepoSlot = CharterRepoSlot()
         self.decisions: DecisionRepoSlot = DecisionRepoSlot()
         self.search: SearchSlot = SearchSlot()
-        self.integrity: IntegritySlot = IntegritySlot()
+        self.integrity: IntegrityService = IntegrityService(self)
 
     def tx(self, fn: Callable[[sqlite3.Connection], Any]) -> Any:
         """Run ``fn(conn)`` inside one transaction (C2.5).
