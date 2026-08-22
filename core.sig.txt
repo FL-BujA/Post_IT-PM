@@ -45,3 +45,127 @@ core/values.py:class PreparedFor:
 core/values.py:    def __init__(self, value: str) -> None:
 core/values.py:class EventRef:
 core/values.py:    def __init__(
+data/_slots.py:placeholder class whose instances raise ``CoreError`` (code
+data/_slots.py:class _Slot:
+data/_slots.py:    def __getattribute__(self, name: str) -> Any:
+data/actions.py:class _KitLike(Protocol):
+data/actions.py:    def tx(self, fn: object) -> object: ...
+data/actions.py:def _ts() -> str:
+data/actions.py:def _ensure_columns(conn: sqlite3.Connection) -> None:
+data/actions.py:class ActionRepo:
+data/actions.py:    def __init__(self, kit: _KitLike) -> None:
+data/actions.py:    def create(
+data/actions.py:    def get(self, action_id: int) -> ActionRow:
+data/actions.py:    def list_for(
+data/actions.py:    def set_status(self, action_id: int, new: ActionStatus | str) -> ActionRow:
+data/actions.py:    def _require_project(self, project_code: str) -> None:
+data/cycles.py:class _KitLike(Protocol):
+data/cycles.py:    def tx(self, fn: object) -> object: ...
+data/cycles.py:def _ts() -> str:
+data/cycles.py:class CycleRepo:
+data/cycles.py:    def __init__(self, kit: _KitLike) -> None:
+data/cycles.py:    def open(self, project_code: str, name: str) -> CycleRow:
+data/cycles.py:    def get(self, cycle_id: int) -> CycleRow:
+data/cycles.py:    def close_cycle(self, cycle_id: int, gate_id: int) -> CycleRow:
+data/cycles.py:    def current_for(self, project_code: str) -> CycleRow | None:
+data/cycles.py:    def _require_project(self, project_code: str) -> None:
+data/db.py:class DataKit:
+data/db.py:    def __init__(self, path: str | os.PathLike[str]) -> None:
+data/db.py:    def tx(self, fn: Callable[[sqlite3.Connection], Any]) -> Any:
+data/db.py:    def close(self) -> None:
+data/db.py:    def __enter__(self) -> Self:
+data/db.py:    def __exit__(self, *exc: object) -> None:
+data/events.py:class _KitLike(Protocol):
+data/events.py:    def tx(self, fn: object) -> object: ...
+data/events.py:def _ts() -> str:
+data/events.py:class EventRepo:
+data/events.py:    def __init__(self, kit: _KitLike) -> None:
+data/events.py:    def emit(
+data/events.py:    def list_for(
+data/evidence.py:class _KitLike(Protocol):
+data/evidence.py:    def tx(self, fn: object) -> object: ...
+data/evidence.py:class EvidenceRepo:
+data/evidence.py:    def __init__(self, kit: _KitLike) -> None:
+data/evidence.py:    def record(self, row: EvidenceRow) -> EvidenceRow:
+data/evidence.py:    def list_for(self, project_code: str) -> list[EvidenceRow]:
+data/evidence.py:    def get_by_path(self, rel_path: str) -> EvidenceRow:
+data/gates.py:class _KitLike(Protocol):
+data/gates.py:    def tx(self, fn: object) -> object: ...
+data/gates.py:def _ts() -> str:
+data/gates.py:class GateRepo:
+data/gates.py:    def __init__(self, kit: _KitLike) -> None:
+data/gates.py:    def create(
+data/gates.py:    def get(self, gate_id: int) -> GateRow:
+data/gates.py:    def record_outcome(self, gate_id: int, outcome: GateOutcome | str) -> GateRow:
+data/gates.py:    def _require_project(self, project_code: str) -> None:
+data/integrity.py:class _KitLike(Protocol):
+data/integrity.py:    def tx(self, fn: object) -> object: ...
+data/integrity.py:class IntegrityReport:
+data/integrity.py:class IntegrityService:
+data/integrity.py:    def __init__(self, kit: _KitLike) -> None:
+data/integrity.py:    def verify(self, workspace_root: str | os.PathLike[str]) -> IntegrityReport:
+data/migrate.py:def _connect(path: str | os.PathLike[str]) -> sqlite3.Connection:
+data/migrate.py:def _create_all(conn: sqlite3.Connection) -> None:
+data/migrate.py:def _schema_version(conn: sqlite3.Connection) -> str | None:
+data/migrate.py:def migrate(path: str | os.PathLike[str]) -> None:
+data/minutes.py:class _KitLike(Protocol):
+data/minutes.py:    def tx(self, fn: object) -> object: ...
+data/minutes.py:def _ts() -> str:
+data/minutes.py:class MinutesRepo:
+data/minutes.py:    def __init__(self, kit: _KitLike) -> None:
+data/minutes.py:    def _ensure_table(self) -> None:
+data/minutes.py:    def add(
+data/minutes.py:    def list_for(self, project_code: str) -> list[tuple]:
+data/projects.py:class _KitLike(Protocol):
+data/projects.py:    def tx(self, fn: object) -> object: ...
+data/projects.py:def _ts() -> str:
+data/projects.py:class ProjectRepo:
+data/projects.py:    def __init__(self, kit: _KitLike) -> None:
+data/projects.py:    def create(
+data/projects.py:    def get(self, code: str) -> ProjectRow:
+data/projects.py:    def list(self) -> list[ProjectRow]:
+data/projects.py:    def set_status(self, code: str, status: ProjectStatus | str) -> ProjectRow:
+data/reports_history.py:class _KitLike(Protocol):
+data/reports_history.py:    def tx(self, fn: object) -> object: ...
+data/reports_history.py:def _ts() -> str:
+data/reports_history.py:class ReportHistoryRepo:
+data/reports_history.py:    def __init__(self, kit: _KitLike) -> None:
+data/reports_history.py:    def _ensure_table(self) -> None:
+data/reports_history.py:    def add(
+data/reports_history.py:    def list_for(self, project_code: str) -> list[tuple]:
+data/rows.py:class ProjectRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class CharterRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class EventRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class EvidenceRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class DecisionRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class ActionRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class CycleRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class CycleItemRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class GateRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/rows.py:class GateItemRow:
+data/rows.py:    def to_dict(self) -> dict[str, Any]:
+data/search.py:class Hit:
+data/search.py:class _KitLike(Protocol):
+data/search.py:    def tx(self, fn: object) -> object: ...
+data/search.py:def _fts_query(terms: str) -> str:
+data/search.py:class SearchRepo:
+data/search.py:    def __init__(self, kit: _KitLike) -> None:
+data/search.py:    def _ensure_fts(self) -> None:
+data/search.py:    def search(
+data/signals.py:class _KitLike(Protocol):
+data/signals.py:    def tx(self, fn: object) -> object: ...
+data/signals.py:def _ts() -> str:
+data/signals.py:class SignalRepo:
+data/signals.py:    def __init__(self, kit: _KitLike) -> None:
+data/signals.py:    def insert(
+data/signals.py:    def list_for(
+data/signals.py:    def set_resolved(self, signal_id: int, resolved: bool) -> None:
