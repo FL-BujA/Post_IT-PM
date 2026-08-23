@@ -8,6 +8,7 @@ No real service logic, no filesystem, no database.
 from __future__ import annotations
 
 from core import CoreError
+from services.actions import ActionsSVC
 from services.phase import PhaseSVC
 from services.projects import ProjectSVC
 
@@ -60,6 +61,8 @@ class ServiceKit:
         object.__setattr__(self, "project_svc", ProjectSVC(root))
         # P-10b: replace the phase_svc placeholder with the real service.
         object.__setattr__(self, "phase_svc", PhaseSVC(root))
+        # P-11: replace the actions_svc placeholder with the real service.
+        object.__setattr__(self, "actions_svc", ActionsSVC(root))
 
     def __repr__(self) -> str:
         return f"ServiceKit(root={self.root!r})"
