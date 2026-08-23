@@ -8,6 +8,7 @@ No real service logic, no filesystem, no database.
 from __future__ import annotations
 
 from core import CoreError
+from services.phase import PhaseSVC
 from services.projects import ProjectSVC
 
 #: The frozen C3.0 slot set — later cards replace placeholders,
@@ -57,6 +58,8 @@ class ServiceKit:
             object.__setattr__(self, slot, _Placeholder(slot))
         # P-10a-ii: replace the project_svc placeholder with the real service.
         object.__setattr__(self, "project_svc", ProjectSVC(root))
+        # P-10b: replace the phase_svc placeholder with the real service.
+        object.__setattr__(self, "phase_svc", PhaseSVC(root))
 
     def __repr__(self) -> str:
         return f"ServiceKit(root={self.root!r})"
