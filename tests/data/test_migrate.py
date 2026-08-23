@@ -101,6 +101,72 @@ def test_engagement_signals_columns_match_c20(tmp_path: Any) -> None:
     ]
 
 
+def test_meeting_minutes_columns_match_c20(tmp_path: Any) -> None:
+    db = str(tmp_path / "app.db")
+    migrate(db)
+    conn = sqlite3.connect(db)
+    try:
+        cols = [
+            row[1]
+            for row in conn.execute("PRAGMA table_info(meeting_minutes)")
+        ]
+    finally:
+        conn.close()
+    # C2.0 column names (project_id implemented as project_code, the
+    # convention of the other tables).
+    assert cols == [
+        "id",
+        "project_code",
+        "cycle_id",
+        "held_at",
+        "attendees",
+        "decisions",
+        "agreed_actions",
+        "risks",
+        "minutes_text",
+    ]
+
+
+def test_report_history_columns_match_c20(tmp_path: Any) -> None:
+    db = str(tmp_path / "app.db")
+    migrate(db)
+    conn = sqlite3.connect(db)
+    try:
+        cols = [
+            row[1]
+            for row in conn.execute("PRAGMA table_info(report_history)")
+        ]
+    finally:
+        conn.close()
+    # C2.0 column names (project_id implemented as project_code, the
+    # convention of the other tables).
+    assert cols == [
+        "id",
+        "project_code",
+        "generated_at",
+        "pdf_rel_path",
+        "html_rel_path",
+        "prepared_for",
+        "snapshot_sha256",
+    ]
+
+
+def test_table_count_matches_c20(tmp_path: Any) -> None:
+    db = str(tmp_path / "app.db")
+    migrate(db)
+    conn = sqlite3.connect(db)
+    try:
+        count = conn.execute(
+            "SELECT COUNT(*) FROM sqlite_master "
+            "WHERE type = 'table' AND name NOT LIKE 'fts_%'"
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    # C2.0 defines 13 tables (10 project tables + engagement_signals +
+    # meeting_minutes + report_history) + meta = 14 total.
+    assert count == len(TABLES) + 1
+
+
 def test_meta_schema_version_is_one(tmp_path: Any) -> None:
     db = str(tmp_path / "app.db")
     migrate(db)

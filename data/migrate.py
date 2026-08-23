@@ -32,6 +32,9 @@ TABLES: tuple[str, ...] = (
     "cycle_item",
     "gate",
     "gate_item",
+    "engagement_signals",
+    "meeting_minutes",
+    "report_history",
 )
 
 #: The 5 secondary indexes created beside the tables (C2.4).
@@ -172,6 +175,28 @@ CREATE TABLE engagement_signals (
     resolved_at   TEXT
 );
 
+CREATE TABLE meeting_minutes (
+    id            INTEGER PRIMARY KEY,
+    project_code  TEXT NOT NULL REFERENCES project(code),
+    cycle_id      INTEGER REFERENCES cycle(id),
+    held_at       TEXT NOT NULL,
+    attendees     TEXT,
+    decisions     TEXT,
+    agreed_actions TEXT,
+    risks         TEXT,
+    minutes_text  TEXT NOT NULL
+);
+
+CREATE TABLE report_history (
+    id            INTEGER PRIMARY KEY,
+    project_code  TEXT NOT NULL REFERENCES project(code),
+    generated_at  TEXT NOT NULL,
+    pdf_rel_path  TEXT NOT NULL,
+    html_rel_path TEXT NOT NULL,
+    prepared_for  TEXT,
+    snapshot_sha256 TEXT NOT NULL
+);
+
 CREATE TABLE meta (
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
@@ -189,6 +214,8 @@ CREATE INDEX idx_evidence_project ON evidence(project_code);
 CREATE INDEX idx_cycle_item_cycle ON cycle_item(cycle_id);
 CREATE INDEX idx_gate_item_gate  ON gate_item(gate_id);
 CREATE INDEX idx_engagement_signals_project_owner ON engagement_signals(project_code, owner);
+CREATE INDEX idx_meeting_minutes_project ON meeting_minutes(project_code);
+CREATE INDEX idx_report_history_project ON report_history(project_code);
 """
 
 
@@ -216,7 +243,7 @@ def _schema_version(conn: sqlite3.Connection) -> str | None:
     return row[0] if row is not None else None
 
 
-def migrate(path: str | os.PathLike[str]) -> None:
+def migrate(path: str | os.PathLike[str]) -> int:
     """Bring the file at ``path`` to schema version ``'1'`` (C2.4).
 
     - New (or empty) file: create all 10 tables + ``fts_search`` + the
@@ -225,6 +252,8 @@ def migrate(path: str | os.PathLike[str]) -> None:
     - File with an unknown ``meta.schema_version``: ``CoreError`` with
       code ``unknown_schema`` — never touch a file this build does not
       understand (future protection).
+
+    Returns ``1`` on success.
     """
     conn = _connect(path)
     try:
@@ -237,6 +266,7 @@ def migrate(path: str | os.PathLike[str]) -> None:
             raise CoreError(
                 f"unknown schema version {version!r}", code="unknown_schema"
             )
+        return 1
     finally:
         conn.close()
 

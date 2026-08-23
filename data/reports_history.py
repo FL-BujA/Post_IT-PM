@@ -39,26 +39,6 @@ class ReportHistoryRepo:
     def __init__(self, kit: _KitLike) -> None:
         self._kit = kit
         self._conn: sqlite3.Connection = kit.conn
-        self._ensure_table()
-
-    def _ensure_table(self) -> None:
-        """Create the ``report_history`` table if it does not exist."""
-        self._conn.execute(
-            "CREATE TABLE IF NOT EXISTS report_history ("
-            "id INTEGER PRIMARY KEY, "
-            "project_code TEXT NOT NULL REFERENCES project(code), "
-            "generated_at TEXT NOT NULL, "
-            "pdf_rel_path TEXT NOT NULL, "
-            "html_rel_path TEXT NOT NULL, "
-            "prepared_for TEXT, "
-            "snapshot_sha256 TEXT NOT NULL"
-            ")"
-        )
-        self._conn.execute(
-            "CREATE INDEX IF NOT EXISTS idx_report_history_project "
-            "ON report_history(project_code)"
-        )
-        self._conn.commit()
 
     # ------------------------------------------------------------------
     # add

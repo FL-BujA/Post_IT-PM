@@ -40,28 +40,6 @@ class MinutesRepo:
     def __init__(self, kit: _KitLike) -> None:
         self._kit = kit
         self._conn: sqlite3.Connection = kit.conn
-        self._ensure_table()
-
-    def _ensure_table(self) -> None:
-        """Create the ``meeting_minutes`` table if it does not exist."""
-        self._conn.execute(
-            "CREATE TABLE IF NOT EXISTS meeting_minutes ("
-            "id INTEGER PRIMARY KEY, "
-            "project_code TEXT NOT NULL REFERENCES project(code), "
-            "cycle_id INTEGER REFERENCES cycle(id), "
-            "held_at TEXT NOT NULL, "
-            "attendees TEXT, "
-            "decisions TEXT, "
-            "agreed_actions TEXT, "
-            "risks TEXT, "
-            "minutes_text TEXT NOT NULL"
-            ")"
-        )
-        self._conn.execute(
-            "CREATE INDEX IF NOT EXISTS idx_meeting_minutes_project "
-            "ON meeting_minutes(project_code)"
-        )
-        self._conn.commit()
 
     # ------------------------------------------------------------------
     # add
