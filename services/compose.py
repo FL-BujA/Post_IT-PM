@@ -8,6 +8,7 @@ No real service logic, no filesystem, no database.
 from __future__ import annotations
 
 from core import CoreError
+from services.projects import ProjectSVC
 
 #: The frozen C3.0 slot set — later cards replace placeholders,
 #: never add or rename slots.
@@ -54,6 +55,8 @@ class ServiceKit:
         self.root = root
         for slot in C30_SLOTS:
             object.__setattr__(self, slot, _Placeholder(slot))
+        # P-10a-ii: replace the project_svc placeholder with the real service.
+        object.__setattr__(self, "project_svc", ProjectSVC(root))
 
     def __repr__(self) -> str:
         return f"ServiceKit(root={self.root!r})"
