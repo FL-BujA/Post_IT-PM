@@ -16,6 +16,7 @@ from typing import Protocol
 
 from core.enums import EventKind
 from core.time import now_utc
+from data.rows import ReportRow
 
 __all__ = ["ReportHistoryRepo"]
 
@@ -98,12 +99,24 @@ class ReportHistoryRepo:
     # list_for
     # ------------------------------------------------------------------
 
-    def list_for(self, project_code: str) -> list[tuple]:
+    def list_for(self, project_code: str) -> list[ReportRow]:
         """A project's report rows ordered ``generated_at DESC, id DESC``."""
-        return self._conn.execute(
+        rows = self._conn.execute(
             "SELECT id, project_code, generated_at, pdf_rel_path, "
             "html_rel_path, prepared_for, snapshot_sha256 "
             "FROM report_history WHERE project_code = ? "
             "ORDER BY generated_at DESC, id DESC",
             (project_code,),
         ).fetchall()
+        return [
+            ReportRow(
+                id=r[0],
+                project_code=r[1],
+                generated_at=r[2],
+                pdf_rel_path=r[3],
+                html_rel_path=r[4],
+                prepared_for=r[5],
+                snapshot_sha256=r[6],
+            )
+            for r in rows
+        ]

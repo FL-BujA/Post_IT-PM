@@ -26,7 +26,7 @@ from core.enums import EventKind, SignalKind
 from data.db import DataKit
 from data.migrate import migrate
 from data.minutes import MinutesRepo
-from data.rows import SignalRow
+from data.rows import MinutesRow, SignalRow
 from data.signals import SignalRepo
 
 
@@ -94,10 +94,9 @@ def test_minutes_add_stores_text_verbatim(tmp_path: Any) -> None:
         minutes_text=original,
     )
 
-    row = kit.conn.execute(
-        "SELECT minutes_text FROM meeting_minutes WHERE project_code = 'P001'"
-    ).fetchone()
-    assert row[0] == original
+    rows = repo.list_for("P001")
+    assert len(rows) == 1
+    assert rows[0].minutes_text == original
 
 
 def test_minutes_add_stores_unique_token(tmp_path: Any) -> None:
@@ -116,10 +115,9 @@ def test_minutes_add_stores_unique_token(tmp_path: Any) -> None:
         minutes_text="quartz-cinder",
     )
 
-    row = kit.conn.execute(
-        "SELECT minutes_text FROM meeting_minutes WHERE project_code = 'P001'"
-    ).fetchone()
-    assert row[0] == "quartz-cinder"
+    rows = repo.list_for("P001")
+    assert len(rows) == 1
+    assert rows[0].minutes_text == "quartz-cinder"
 
 
 # ---------------------------------------------------------------------------
@@ -225,3 +223,13 @@ def test_signalrow_matches_table(tmp_path: Any) -> None:
         for r in kit.conn.execute("PRAGMA table_info(engagement_signals)")
     ]
     assert [f.name for f in fields(SignalRow)] == columns
+
+
+def test_minutesrow_matches_table(tmp_path: Any) -> None:
+    """MinutesRow's field names equal the meeting_minutes columns in order."""
+    kit = _kit(tmp_path)
+    columns = [
+        r[1]
+        for r in kit.conn.execute("PRAGMA table_info(meeting_minutes)")
+    ]
+    assert [f.name for f in fields(MinutesRow)] == columns

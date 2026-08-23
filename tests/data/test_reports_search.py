@@ -18,6 +18,7 @@ Done-when (P-09b):
 
 from __future__ import annotations
 
+from dataclasses import fields
 from typing import Any
 
 import pytest
@@ -27,6 +28,7 @@ from data.db import DataKit
 from data.migrate import migrate
 from data.minutes import MinutesRepo
 from data.reports_history import ReportHistoryRepo
+from data.rows import ReportRow
 from data.search import SearchRepo
 
 
@@ -89,7 +91,17 @@ def test_report_list_for_orders_generated_at_desc(tmp_path: Any) -> None:
     rows = kit.reports.list_for("P001")
     assert len(rows) == 3
     # generated_at DESC: id2 (03:00), id3 (02:00), id1 (01:00).
-    assert [row[0] for row in rows] == [id2, id3, id1]
+    assert [row.id for row in rows] == [id2, id3, id1]
+
+
+def test_reportrow_matches_table(tmp_path: Any) -> None:
+    """ReportRow's field names equal the report_history columns in order."""
+    kit = _kit(tmp_path)
+    columns = [
+        r[1]
+        for r in kit.conn.execute("PRAGMA table_info(report_history)")
+    ]
+    assert [f.name for f in fields(ReportRow)] == columns
 
 
 # ---------------------------------------------------------------------------

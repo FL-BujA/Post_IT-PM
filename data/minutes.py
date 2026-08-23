@@ -18,6 +18,7 @@ from typing import Protocol
 
 from core.enums import EventKind
 from core.time import now_utc
+from data.rows import MinutesRow
 
 __all__ = ["MinutesRepo"]
 
@@ -102,12 +103,26 @@ class MinutesRepo:
     # list_for
     # ------------------------------------------------------------------
 
-    def list_for(self, project_code: str) -> list[tuple]:
+    def list_for(self, project_code: str) -> list[MinutesRow]:
         """All minutes for a project, ordered ``held_at ASC, id ASC``."""
-        return self._conn.execute(
+        rows = self._conn.execute(
             "SELECT id, project_code, cycle_id, held_at, attendees, "
             "decisions, agreed_actions, risks, minutes_text "
             "FROM meeting_minutes WHERE project_code = ? "
             "ORDER BY held_at ASC, id ASC",
             (project_code,),
         ).fetchall()
+        return [
+            MinutesRow(
+                id=r[0],
+                project_code=r[1],
+                cycle_id=r[2],
+                held_at=r[3],
+                attendees=r[4],
+                decisions=r[5],
+                agreed_actions=r[6],
+                risks=r[7],
+                minutes_text=r[8],
+            )
+            for r in rows
+        ]
