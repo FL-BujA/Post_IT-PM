@@ -32,7 +32,7 @@ cd "$(git rev-parse --show-toplevel 2>/dev/null)" || {
 git config user.name  "$GIT_NAME"
 git config user.email "$GIT_EMAIL"
 
-REMOTE_URL=$(git config --get remote.origin.url)
+REMOTE_URL=$(git config --get remote.origin.url | sed -E "s#//[^@]*@#//#")
 
 echo "== staging"
 git add -A
