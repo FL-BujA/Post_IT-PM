@@ -160,6 +160,18 @@ CREATE TABLE gate_item (
     created_at    TEXT NOT NULL
 );
 
+CREATE TABLE engagement_signals (
+    id            INTEGER PRIMARY KEY,
+    project_code  TEXT NOT NULL REFERENCES project(code),
+    owner         TEXT NOT NULL,
+    kind          TEXT NOT NULL,
+    action_id     INTEGER REFERENCES action(id),
+    occurred_at   TEXT NOT NULL,
+    note          TEXT,
+    resolved      INTEGER NOT NULL DEFAULT 0,
+    resolved_at   TEXT
+);
+
 CREATE TABLE meta (
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
@@ -176,6 +188,7 @@ CREATE INDEX idx_action_project  ON action(project_code);
 CREATE INDEX idx_evidence_project ON evidence(project_code);
 CREATE INDEX idx_cycle_item_cycle ON cycle_item(cycle_id);
 CREATE INDEX idx_gate_item_gate  ON gate_item(gate_id);
+CREATE INDEX idx_engagement_signals_project_owner ON engagement_signals(project_code, owner);
 """
 
 

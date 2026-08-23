@@ -75,6 +75,32 @@ def test_evidence_rel_path_is_unique(tmp_path: Any) -> None:
     assert "sqlite_autoindex_evidence_1" in cols
 
 
+def test_engagement_signals_columns_match_c20(tmp_path: Any) -> None:
+    db = str(tmp_path / "app.db")
+    migrate(db)
+    conn = sqlite3.connect(db)
+    try:
+        cols = [
+            row[1]
+            for row in conn.execute("PRAGMA table_info(engagement_signals)")
+        ]
+    finally:
+        conn.close()
+    # C2.0 column names (project_id implemented as project_code, the
+    # convention of the other eleven tables).
+    assert cols == [
+        "id",
+        "project_code",
+        "owner",
+        "kind",
+        "action_id",
+        "occurred_at",
+        "note",
+        "resolved",
+        "resolved_at",
+    ]
+
+
 def test_meta_schema_version_is_one(tmp_path: Any) -> None:
     db = str(tmp_path / "app.db")
     migrate(db)

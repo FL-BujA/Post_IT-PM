@@ -99,25 +99,6 @@ def _ensure_columns(conn: sqlite3.Connection) -> None:
         conn.execute("ALTER TABLE action ADD COLUMN last_reopened_at TEXT")
     if "closed_at" not in existing:
         conn.execute("ALTER TABLE action ADD COLUMN closed_at TEXT")
-    # I4 needs the engagement_signals table (C2.0 names it; the frozen
-    # C2.4 DDL does not create it).  Created idempotently here.
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS engagement_signals ("
-        "id INTEGER PRIMARY KEY, "
-        "project_code TEXT NOT NULL REFERENCES project(code), "
-        "owner TEXT NOT NULL, "
-        "kind TEXT NOT NULL, "
-        "action_id INTEGER REFERENCES action(id), "
-        "occurred_at TEXT NOT NULL, "
-        "note TEXT, "
-        "resolved INTEGER NOT NULL DEFAULT 0, "
-        "resolved_at TEXT"
-        ")"
-    )
-    conn.execute(
-        "CREATE INDEX IF NOT EXISTS idx_engagement_signals_project_owner "
-        "ON engagement_signals(project_code, owner)"
-    )
 
 
 class ActionRepo:
