@@ -281,6 +281,86 @@ class GateItemRow:
         }
 
 
+@dataclass
+class MinutesRow:
+    """Table ``meeting_minutes`` (C2.0)."""
+
+    id: int
+    project_code: str
+    cycle_id: int | None
+    held_at: str
+    attendees: str | None
+    decisions: str | None
+    agreed_actions: str | None
+    risks: str | None
+    minutes_text: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "project_code": self.project_code,
+            "cycle_id": self.cycle_id,
+            "held_at": self.held_at,
+            "attendees": self.attendees,
+            "decisions": self.decisions,
+            "agreed_actions": self.agreed_actions,
+            "risks": self.risks,
+            "minutes_text": self.minutes_text,
+        }
+
+
+@dataclass
+class SignalRow:
+    """Table ``engagement_signals`` (C2.0)."""
+
+    id: int
+    project_code: str
+    owner: str
+    kind: str
+    action_id: int | None
+    occurred_at: str
+    note: str | None
+    resolved: int
+    resolved_at: str | None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "project_code": self.project_code,
+            "owner": self.owner,
+            "kind": self.kind,
+            "action_id": self.action_id,
+            "occurred_at": self.occurred_at,
+            "note": self.note,
+            "resolved": self.resolved,
+            "resolved_at": self.resolved_at,
+        }
+
+
+@dataclass
+class ReportRow:
+    """Table ``report_history`` (C2.0)."""
+
+    id: int
+    project_code: str
+    generated_at: str
+    pdf_rel_path: str
+    html_rel_path: str
+    prepared_for: str | None
+    snapshot_sha256: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": self.id,
+            "project_code": self.project_code,
+            "generated_at": self.generated_at,
+            "pdf_rel_path": self.pdf_rel_path,
+            "html_rel_path": self.html_rel_path,
+            "prepared_for": self.prepared_for,
+            "snapshot_sha256": self.snapshot_sha256,
+        }
+
+
 __all__ = [
     "ActionRow",
     "CharterRow",
@@ -291,5 +371,8 @@ __all__ = [
     "EvidenceRow",
     "GateItemRow",
     "GateRow",
+    "MinutesRow",
     "ProjectRow",
+    "ReportRow",
+    "SignalRow",
 ]

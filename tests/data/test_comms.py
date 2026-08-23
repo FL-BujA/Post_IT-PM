@@ -17,6 +17,7 @@ Done-when (P-09a):
 
 from __future__ import annotations
 
+from dataclasses import fields
 from typing import Any
 
 import pytest
@@ -25,6 +26,7 @@ from core.enums import EventKind, SignalKind
 from data.db import DataKit
 from data.migrate import migrate
 from data.minutes import MinutesRepo
+from data.rows import SignalRow
 from data.signals import SignalRepo
 
 
@@ -160,12 +162,12 @@ def test_signals_list_for_filters(tmp_path: Any) -> None:
     # Filter by kind.
     results = repo.list_for(project_code="P001", kind=SignalKind.DEFER)
     assert len(results) == 2
-    assert all(row[3] == SignalKind.DEFER.value for row in results)
+    assert all(row.kind == SignalKind.DEFER.value for row in results)
 
     # Filter by owner.
     results = repo.list_for(project_code="P001", owner="Ana")
     assert len(results) == 1
-    assert results[0][2] == "Ana"
+    assert results[0].owner == "Ana"
 
     # Filter by resolved (all are unresolved initially).
     results = repo.list_for(project_code="P001", resolved=False)
@@ -213,3 +215,13 @@ def test_signals_set_resolved_toggles_and_stamps(tmp_path: Any) -> None:
     ).fetchone()
     assert row[0] == 0
     assert row[1] is not None
+
+
+def test_signalrow_matches_table(tmp_path: Any) -> None:
+    """SignalRow's field names equal the engagement_signals columns in order."""
+    kit = _kit(tmp_path)
+    columns = [
+        r[1]
+        for r in kit.conn.execute("PRAGMA table_info(engagement_signals)")
+    ]
+    assert [f.name for f in fields(SignalRow)] == columns

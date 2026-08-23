@@ -19,6 +19,7 @@ from typing import Protocol
 
 from core.enums import EventKind, SignalKind
 from core.time import now_utc
+from data.rows import SignalRow
 
 __all__ = ["SignalRepo"]
 
@@ -107,7 +108,7 @@ class SignalRepo:
         kind: SignalKind | str | None = None,
         owner: str | None = None,
         resolved: bool | None = None,
-    ) -> list[tuple]:
+    ) -> list[SignalRow]:
         """Signals for a project, optionally filtered.
 
         Filters: ``kind``, ``owner``, ``resolved`` (each optional).
@@ -131,7 +132,20 @@ class SignalRepo:
             sql += " AND resolved = ?"
             params.append(1 if resolved else 0)
         sql += " ORDER BY occurred_at ASC, id ASC"
-        return self._conn.execute(sql, params).fetchall()
+        return [
+            SignalRow(
+                id=r[0],
+                project_code=r[1],
+                owner=r[2],
+                kind=r[3],
+                action_id=r[4],
+                occurred_at=r[5],
+                note=r[6],
+                resolved=r[7],
+                resolved_at=r[8],
+            )
+            for r in self._conn.execute(sql, params).fetchall()
+        ]
 
     # ------------------------------------------------------------------
     # set_resolved
