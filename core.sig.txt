@@ -1,35 +1,73 @@
 core/enums.py:27: class ProjectStatus
+    CHARTER = 'charter'
+    ACTIVE = 'active'
+    IN_REVIEW = 'in_review'
+    DELIVERED = 'delivered'
+    CLOSED = 'closed'
 core/enums.py:35: class EventKind
+    CHARTER = 'charter'
+    GATE = 'gate'
+    DECISION = 'decision'
+    ACTION_CREATED = 'action_created'
+    ACTION_STATUS = 'action_status'
+    EVIDENCE = 'evidence'
+    MEETING = 'meeting'
+    SIGNAL = 'signal'
+    REPORT = 'report'
+    NOTE = 'note'
+    PHASE = 'phase'
 core/enums.py:49: class ActionStatus
+    OPEN = 'open'
+    IN_PROGRESS = 'in_progress'
+    DONE = 'done'
+    DEFERRED = 'deferred'
+    CANCELLED = 'cancelled'
 core/enums.py:57: class GateOutcome
+    PLANNED = 'planned'
+    PASSED = 'passed'
+    CONDITIONALLY_PASSED = 'conditionally_passed'
+    FAILED = 'failed'
+    SKIPPED = 'skipped'
 core/enums.py:65: class SourceType
+    EMAIL = 'email'
+    SPREADSHEET = 'spreadsheet'
+    SCREENSHOT = 'screenshot'
+    DOC = 'doc'
+    OTHER = 'other'
 core/enums.py:73: class SignalKind
+    DEFER = 'defer'
+    EXTENSION_REQUEST = 'extension_request'
+    LATE_START = 'late_start'
+    REOPEN = 'reopen'
 core/errors.py:26: class CoreError
+    code: str = 'core'
+    def __init__(self, message: str, *, code: str | None=None) -> None
 core/errors.py:37: class DataError
+    code = 'data_error'
 core/errors.py:43: class ServiceError
+    code = 'service_error'
 core/errors.py:49: class UnknownProjectData
+    def __init__(self, message: str) -> None
 core/errors.py:54: class InvalidSlug
+    def __init__(self, message: str) -> None
 core/errors.py:59: class PathEscape
+    def __init__(self, message: str) -> None
 core/errors.py:64: class OwnerError
+    def __init__(self, message: str) -> None
 core/errors.py:69: class UnknownProjectService
+    def __init__(self, message: str) -> None
 core/errors.py:74: class EvidenceConflict
+    def __init__(self, message: str) -> None
 core/errors.py:79: class GateMissing
+    def __init__(self, message: str) -> None
 core/errors.py:84: class CycleCloseError
+    def __init__(self, message: str) -> None
 core/errors.py:89: class IntegrityError
+    def __init__(self, message: str) -> None
 core/errors.py:94: class MissingFileError
+    def __init__(self, message: str) -> None
 core/errors.py:99: class PdfError
-core/errors.py:31: def __init__(self, message: str, *, code: str | None=None) -> None
-core/errors.py:50: def __init__(self, message: str) -> None
-core/errors.py:55: def __init__(self, message: str) -> None
-core/errors.py:60: def __init__(self, message: str) -> None
-core/errors.py:65: def __init__(self, message: str) -> None
-core/errors.py:70: def __init__(self, message: str) -> None
-core/errors.py:75: def __init__(self, message: str) -> None
-core/errors.py:80: def __init__(self, message: str) -> None
-core/errors.py:85: def __init__(self, message: str) -> None
-core/errors.py:90: def __init__(self, message: str) -> None
-core/errors.py:95: def __init__(self, message: str) -> None
-core/errors.py:100: def __init__(self, message: str) -> None
+    def __init__(self, message: str) -> None
 core/hash.py:25: def sha256_bytes(data: bytes) -> str
 core/hash.py:30: def sha256_file(path: str | os.PathLike) -> str
 core/hash.py:43: def short_id() -> str
@@ -38,131 +76,263 @@ core/paths.py:63: def slugify(name: str, date: str, ext: str) -> str
 core/paths.py:100: def normalize_relpath(relpath: str) -> str
 core/time.py:16: def now_utc() -> datetime
 core/values.py:29: class Owner
+    name: str
+    def __init__(self, name: str) -> None
 core/values.py:45: class PreparedFor
+    value: str
+    def __init__(self, value: str) -> None
 core/values.py:61: class EventRef
-core/values.py:38: def __init__(self, name: str) -> None
-core/values.py:54: def __init__(self, value: str) -> None
-core/values.py:73: def __init__(self, kind: EventKind, ref_table: str | None=None, ref_id: int | None=None) -> None
+    kind: EventKind
+    ref_table: str | None
+    ref_id: int | None
+    def __init__(self, kind: EventKind, ref_table: str | None=None, ref_id: int | None=None) -> None
 data/_slots.py:21: class _Slot
-data/_slots.py:29: def __getattribute__(self, name: str) -> Any
+    def __getattribute__(self, name: str) -> Any
 data/actions.py:62: class _KitLike
+    conn: sqlite3.Connection
+    events: object
+    def tx(self, fn: object) -> object
 data/actions.py:73: def _ts() -> str
 data/actions.py:77: def _ensure_columns(conn: sqlite3.Connection) -> None
 data/actions.py:123: class ActionRepo
-data/actions.py:70: def tx(self, fn: object) -> object
-data/actions.py:126: def __init__(self, kit: _KitLike) -> None
-data/actions.py:135: def create(self, project_code: str, title: str, owner: str, *, description: str='', priority: int=9, due_start: str | None=None, due_end: str | None=None) -> ActionRow
-data/actions.py:197: def get(self, action_id: int) -> ActionRow
-data/actions.py:212: def list_for(self, project_code: str, cycle_id: int | None=None) -> list[ActionRow]
-data/actions.py:232: def set_status(self, action_id: int, new: ActionStatus | str) -> ActionRow
-data/actions.py:321: def _require_project(self, project_code: str) -> None
+    def __init__(self, kit: _KitLike) -> None
+    def create(self, project_code: str, title: str, owner: str, *, description: str='', priority: int=9, due_start: str | None=None, due_end: str | None=None) -> ActionRow
+    def get(self, action_id: int) -> ActionRow
+    def list_for(self, project_code: str, cycle_id: int | None=None) -> list[ActionRow]
+    def set_status(self, action_id: int, new: ActionStatus | str) -> ActionRow
+    def _require_project(self, project_code: str) -> None
 data/cycles.py:43: class _KitLike
+    conn: sqlite3.Connection
+    events: object
+    def tx(self, fn: object) -> object
 data/cycles.py:54: def _ts() -> str
 data/cycles.py:58: class CycleRepo
-data/cycles.py:51: def tx(self, fn: object) -> object
-data/cycles.py:61: def __init__(self, kit: _KitLike) -> None
-data/cycles.py:69: def open(self, project_code: str, name: str) -> CycleRow
-data/cycles.py:111: def get(self, cycle_id: int) -> CycleRow
-data/cycles.py:126: def close_cycle(self, cycle_id: int, gate_id: int) -> CycleRow
-data/cycles.py:165: def current_for(self, project_code: str) -> CycleRow | None
-data/cycles.py:186: def _require_project(self, project_code: str) -> None
+    def __init__(self, kit: _KitLike) -> None
+    def open(self, project_code: str, name: str) -> CycleRow
+    def get(self, cycle_id: int) -> CycleRow
+    def close_cycle(self, cycle_id: int, gate_id: int) -> CycleRow
+    def current_for(self, project_code: str) -> CycleRow | None
+    def _require_project(self, project_code: str) -> None
 data/db.py:39: class DataKit
-data/db.py:54: def __init__(self, path: str | os.PathLike[str]) -> None
-data/db.py:80: def tx(self, fn: Callable[[sqlite3.Connection], Any]) -> Any
-data/db.py:95: def close(self) -> None
-data/db.py:99: def __enter__(self) -> Self
-data/db.py:102: def __exit__(self, *exc: object) -> None
+    def __init__(self, path: str | os.PathLike[str]) -> None
+    def tx(self, fn: Callable[[sqlite3.Connection], Any]) -> Any
+    def close(self) -> None
+    def __enter__(self) -> Self
+    def __exit__(self, *exc: object) -> None
 data/events.py:27: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/events.py:36: def _ts() -> str
 data/events.py:40: class EventRepo
-data/events.py:33: def tx(self, fn: object) -> object
-data/events.py:43: def __init__(self, kit: _KitLike) -> None
-data/events.py:51: def emit(self, project_code: str, kind: EventKind | str, title: str, *, ref_table: str | None=None, ref_id: int | None=None, body: str | None=None, occurred_at: str | None=None) -> EventRow
-data/events.py:103: def list_for(self, project_code: str, *, kind: EventKind | str | None=None, limit: int | None=None) -> list[EventRow]
+    def __init__(self, kit: _KitLike) -> None
+    def emit(self, project_code: str, kind: EventKind | str, title: str, *, ref_table: str | None=None, ref_id: int | None=None, body: str | None=None, occurred_at: str | None=None) -> EventRow
+    def list_for(self, project_code: str, *, kind: EventKind | str | None=None, limit: int | None=None) -> list[EventRow]
 data/evidence.py:28: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/evidence.py:37: class EvidenceRepo
-data/evidence.py:34: def tx(self, fn: object) -> object
-data/evidence.py:40: def __init__(self, kit: _KitLike) -> None
-data/evidence.py:48: def record(self, row: EvidenceRow) -> EvidenceRow
-data/evidence.py:75: def list_for(self, project_code: str) -> list[EvidenceRow]
-data/evidence.py:89: def get_by_path(self, rel_path: str) -> EvidenceRow
+    def __init__(self, kit: _KitLike) -> None
+    def record(self, row: EvidenceRow) -> EvidenceRow
+    def list_for(self, project_code: str) -> list[EvidenceRow]
+    def get_by_path(self, rel_path: str) -> EvidenceRow
 data/gates.py:44: class _KitLike
+    conn: sqlite3.Connection
+    events: object
+    def tx(self, fn: object) -> object
 data/gates.py:55: def _ts() -> str
 data/gates.py:59: class GateRepo
-data/gates.py:52: def tx(self, fn: object) -> object
-data/gates.py:62: def __init__(self, kit: _KitLike) -> None
-data/gates.py:70: def create(self, project_code: str, name: str, *, planned_date: str | None=None) -> GateRow
-data/gates.py:123: def get(self, gate_id: int) -> GateRow
-data/gates.py:141: def record_outcome(self, gate_id: int, outcome: GateOutcome | str) -> GateRow
-data/gates.py:191: def _require_project(self, project_code: str) -> None
+    def __init__(self, kit: _KitLike) -> None
+    def create(self, project_code: str, name: str, *, planned_date: str | None=None) -> GateRow
+    def get(self, gate_id: int) -> GateRow
+    def record_outcome(self, gate_id: int, outcome: GateOutcome | str) -> GateRow
+    def _require_project(self, project_code: str) -> None
 data/integrity.py:29: class _KitLike
+    conn: object
+    def tx(self, fn: object) -> object
 data/integrity.py:39: class IntegrityReport
+    ok: bool
+    missing: list[EvidenceRow]
+    mismatched: list[tuple[EvidenceRow, str]]
+    orphans: list[str]
 data/integrity.py:48: class IntegrityService
-data/integrity.py:35: def tx(self, fn: object) -> object
-data/integrity.py:51: def __init__(self, kit: _KitLike) -> None
-data/integrity.py:55: def verify(self, workspace_root: str | os.PathLike[str]) -> IntegrityReport
+    def __init__(self, kit: _KitLike) -> None
+    def verify(self, workspace_root: str | os.PathLike[str]) -> IntegrityReport
 data/migrate.py:182: def _connect(path: str | os.PathLike[str]) -> sqlite3.Connection
 data/migrate.py:186: def _create_all(conn: sqlite3.Connection) -> None
 data/migrate.py:196: def _schema_version(conn: sqlite3.Connection) -> str | None
 data/migrate.py:206: def migrate(path: str | os.PathLike[str]) -> None
 data/minutes.py:25: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/minutes.py:33: def _ts() -> str
 data/minutes.py:37: class MinutesRepo
-data/minutes.py:30: def tx(self, fn: object) -> object
-data/minutes.py:40: def __init__(self, kit: _KitLike) -> None
-data/minutes.py:45: def _ensure_table(self) -> None
-data/minutes.py:70: def add(self, project_code: str, held_at: str, attendees: str | None, decisions: str | None, agreed_actions: str | None, risks: str | None, minutes_text: str, cycle_id: int | None=None) -> int
-data/minutes.py:127: def list_for(self, project_code: str) -> list[tuple]
+    def __init__(self, kit: _KitLike) -> None
+    def _ensure_table(self) -> None
+    def add(self, project_code: str, held_at: str, attendees: str | None, decisions: str | None, agreed_actions: str | None, risks: str | None, minutes_text: str, cycle_id: int | None=None) -> int
+    def list_for(self, project_code: str) -> list[tuple]
 data/projects.py:31: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/projects.py:40: def _ts() -> str
 data/projects.py:44: class ProjectRepo
-data/projects.py:37: def tx(self, fn: object) -> object
-data/projects.py:47: def __init__(self, kit: _KitLike) -> None
-data/projects.py:55: def create(self, code: str, name: str, status: ProjectStatus | str=ProjectStatus.CHARTER, *, charter: str | None=None, target: str | None=None, target_date: str | None=None, status_rag: str | None=None, red_flags: str | None=None, escalation: str | None=None, sponsor: str | None=None) -> ProjectRow
-data/projects.py:111: def get(self, code: str) -> ProjectRow
-data/projects.py:127: def list(self) -> list[ProjectRow]
-data/projects.py:140: def set_status(self, code: str, status: ProjectStatus | str) -> ProjectRow
+    def __init__(self, kit: _KitLike) -> None
+    def create(self, code: str, name: str, status: ProjectStatus | str=ProjectStatus.CHARTER, *, charter: str | None=None, target: str | None=None, target_date: str | None=None, status_rag: str | None=None, red_flags: str | None=None, escalation: str | None=None, sponsor: str | None=None) -> ProjectRow
+    def get(self, code: str) -> ProjectRow
+    def list(self) -> list[ProjectRow]
+    def set_status(self, code: str, status: ProjectStatus | str) -> ProjectRow
 data/reports_history.py:23: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/reports_history.py:32: def _ts() -> str
 data/reports_history.py:36: class ReportHistoryRepo
-data/reports_history.py:29: def tx(self, fn: object) -> object
-data/reports_history.py:39: def __init__(self, kit: _KitLike) -> None
-data/reports_history.py:44: def _ensure_table(self) -> None
-data/reports_history.py:67: def add(self, project_code: str, pdf_rel_path: str, html_rel_path: str, prepared_for: str | None, snapshot_sha256: str, generated_at: str | None=None) -> int
-data/reports_history.py:121: def list_for(self, project_code: str) -> list[tuple]
+    def __init__(self, kit: _KitLike) -> None
+    def _ensure_table(self) -> None
+    def add(self, project_code: str, pdf_rel_path: str, html_rel_path: str, prepared_for: str | None, snapshot_sha256: str, generated_at: str | None=None) -> int
+    def list_for(self, project_code: str) -> list[tuple]
 data/rows.py:17: class ProjectRow
+    code: str
+    name: str
+    status: str
+    charter: str | None
+    target: str | None
+    target_date: str | None
+    status_rag: str | None
+    red_flags: str | None
+    escalation: str | None
+    sponsor: str | None
+    created_at: str
+    updated_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:51: class CharterRow
+    id: int
+    project_code: str
+    revision: int
+    body: str
+    key_dates: str | None
+    created_at: str
+    reason: str | None
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:75: class EventRow
+    id: int
+    project_code: str
+    kind: str
+    ref_table: str | None
+    ref_id: int | None
+    title: str
+    body: str | None
+    occurred_at: str
+    created_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:103: class EvidenceRow
+    id: str
+    project_code: str
+    ref_table: str | None
+    ref_id: int | None
+    original_name: str
+    source_type: str
+    rel_path: str
+    size_bytes: int
+    sha256: str
+    attached_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:133: class DecisionRow
+    id: int
+    project_code: str
+    event_id: int
+    revision: int
+    body: str
+    created_at: str
+    reason: str | None
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:157: class ActionRow
+    id: int
+    project_code: str
+    description: str
+    owner: str
+    priority: int
+    due: str | None
+    status: str
+    event_id: int
+    reopen_count: int
+    created_at: str
+    updated_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:189: class CycleRow
+    id: int
+    project_code: str
+    name: str
+    gate_id: int | None
+    closed_at: str | None
+    validated: int
+    validated_at: str | None
+    created_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:215: class CycleItemRow
+    id: int
+    cycle_id: int
+    project_code: str
+    action_id: int
+    rank: int
+    created_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:237: class GateRow
+    id: int
+    project_code: str
+    event_id: int
+    name: str
+    outcome: str
+    planned_date: str | None
+    actual_date: str | None
+    created_at: str
+    def to_dict(self) -> dict[str, Any]
 data/rows.py:263: class GateItemRow
-data/rows.py:33: def to_dict(self) -> dict[str, Any]
-data/rows.py:62: def to_dict(self) -> dict[str, Any]
-data/rows.py:88: def to_dict(self) -> dict[str, Any]
-data/rows.py:117: def to_dict(self) -> dict[str, Any]
-data/rows.py:144: def to_dict(self) -> dict[str, Any]
-data/rows.py:172: def to_dict(self) -> dict[str, Any]
-data/rows.py:201: def to_dict(self) -> dict[str, Any]
-data/rows.py:225: def to_dict(self) -> dict[str, Any]
-data/rows.py:249: def to_dict(self) -> dict[str, Any]
-data/rows.py:273: def to_dict(self) -> dict[str, Any]
+    id: int
+    gate_id: int
+    project_code: str
+    text: str
+    passed: int
+    created_at: str
+    def to_dict(self) -> dict[str, Any]
 data/search.py:30: class Hit
+    table: str
+    row_id: int
+    snippet: str
 data/search.py:38: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/search.py:58: def _fts_query(terms: str) -> str
 data/search.py:72: class SearchRepo
-data/search.py:44: def tx(self, fn: object) -> object
-data/search.py:75: def __init__(self, kit: _KitLike) -> None
-data/search.py:80: def _ensure_fts(self) -> None
-data/search.py:125: def search(self, terms: str, project_code: str | None=None, limit: int=50) -> list[Hit]
+    def __init__(self, kit: _KitLike) -> None
+    def _ensure_fts(self) -> None
+    def search(self, terms: str, project_code: str | None=None, limit: int=50) -> list[Hit]
 data/signals.py:26: class _KitLike
+    conn: sqlite3.Connection
+    def tx(self, fn: object) -> object
 data/signals.py:34: def _ts() -> str
 data/signals.py:38: class SignalRepo
-data/signals.py:31: def tx(self, fn: object) -> object
-data/signals.py:41: def __init__(self, kit: _KitLike) -> None
-data/signals.py:49: def insert(self, kind: SignalKind | str, project_code: str, owner: str, action_id: int | None=None, note: str='') -> int
-data/signals.py:104: def list_for(self, project_code: str, kind: SignalKind | str | None=None, owner: str | None=None, resolved: bool | None=None) -> list[tuple]
-data/signals.py:140: def set_resolved(self, signal_id: int, resolved: bool) -> None
+    def __init__(self, kit: _KitLike) -> None
+    def insert(self, kind: SignalKind | str, project_code: str, owner: str, action_id: int | None=None, note: str='') -> int
+    def list_for(self, project_code: str, kind: SignalKind | str | None=None, owner: str | None=None, resolved: bool | None=None) -> list[tuple]
+    def set_resolved(self, signal_id: int, resolved: bool) -> None
+services/compose.py:28: class _Placeholder
+    def __init__(self, slot: str) -> None
+    def __getattr__(self, name: str) -> None
+    def __setattr__(self, name: str, value: object) -> None
+    def __repr__(self) -> str
+services/compose.py:48: class ServiceKit
+    def __init__(self, root: str) -> None
+    def __repr__(self) -> str
+services/phase.py:25: class PhaseSVC
+    def __init__(self, workspace_root: str) -> None
+    def __getattr__(self, name: str) -> Any
+    def _ensure_data(self) -> DataKit
+    def open_cycle(self, project_code: str, name: str) -> CycleRow
+    def close_cycle(self, project_code: str, gate_id: int) -> CycleRow
+services/projects.py:34: def _next_code(existing: list[ProjectRow]) -> str
+services/projects.py:44: def _write_manifest(workspace_root: str, codes: list[str]) -> None
+services/projects.py:53: class ProjectSVC
+    def __init__(self, workspace_root: str) -> None
+    def __getattr__(self, name: str) -> Any
+    def _ensure_data(self) -> DataKit
+    def create_project(self, name: str, target_date: str, sponsor: str='TBD', objective: str='', charter_text: str='', constraints_text: str='') -> ProjectRow
+    def update_project(self, code: str, name: str | None=None, target: str | None=None, prepared_for: str | None=None) -> ProjectRow
