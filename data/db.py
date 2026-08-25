@@ -17,19 +17,17 @@ import sqlite3
 from collections.abc import Callable
 from typing import Any, Self
 
-from data._slots import (
-    CharterRepoSlot,
-    DecisionRepoSlot,
-    IntegritySlot,
-    SearchSlot,
-)
 from data.actions import ActionRepo
 from data.cycles import CycleRepo
 from data.evidence import EvidenceRepo
 from data.events import EventRepo
 from data.gates import GateRepo
 from data.integrity import IntegrityService
+from data.minutes import MinutesRepo
 from data.projects import ProjectRepo
+from data.reports_history import ReportHistoryRepo
+from data.search import SearchRepo
+from data.signals import SignalRepo
 
 #: Frozen connection settings (C2.5).
 JOURNAL_MODE = "wal"
@@ -43,12 +41,10 @@ class DataKit:
     does not exist — run ``data.migrate`` on it before writing) and
     immediately applies the WAL journal mode and the 5 s busy timeout.
 
-    C2.1 assembly (frozen from P-06): ``data.projects`` and
-    ``data.events`` are real repositories over this ONE connection; the
-    remaining C2.1 slots (cycles, charter, evidence, decisions, actions,
-    gates, search, integrity) are typed placeholders that raise
-    ``CoreError`` until later cards fill them — the shape never
-    reshuffles.
+    C2.1 assembly (A-00): all eleven C2.1 slots are real repositories
+    over this ONE connection, constructed lazily on first access and
+    cached — a ``DataKit`` that is never asked for a repo constructs
+    none.  The shape never reshuffles.
     """
 
     def __init__(self, path: str | os.PathLike[str]) -> None:
@@ -56,26 +52,34 @@ class DataKit:
         self.conn = sqlite3.connect(self.path)
         self.conn.execute(f"PRAGMA journal_mode = {JOURNAL_MODE}")
         self.conn.execute(f"PRAGMA busy_timeout = {BUSY_TIMEOUT_MS}")
+        # C2.1 assembly (A-00): lazy, cached repository slots.  The
+        # mapping is the single source of the eleven C2.1 attributes.
+        self._repo_factories: dict[str, Callable[[], Any]] = {
+            "projects": lambda: ProjectRepo(self),
+            "events": lambda: EventRepo(self),
+            "cycles": lambda: CycleRepo(self),
+            "gates": lambda: GateRepo(self),
+            "actions": lambda: ActionRepo(self),
+            "evidence": lambda: EvidenceRepo(self),
+            "minutes": lambda: MinutesRepo(self),
+            "signals": lambda: SignalRepo(self),
+            "reports": lambda: ReportHistoryRepo(self),
+            "search": lambda: SearchRepo(self),
+            "integrity": lambda: IntegrityService(self),
+        }
+        self._repos: dict[str, Any] = {}
 
-        # C2.1 assembly (P-06): real repos over the single connection.
-        self.projects = ProjectRepo(self)
-        self.events = EventRepo(self)
-
-        # C2.1 assembly (P-07): gates + cycles slots filled in — invariant
-        # I3 lives here (a cycle cannot close without a gate outcome).
-        self.gates = GateRepo(self)
-        self.cycles = CycleRepo(self)
-
-        # C2.1 assembly (P-08): actions + evidence slots filled in —
-        # invariant I4 lives in data.actions (done->open reopens).
-        self.actions = ActionRepo(self)
-        self.evidence = EvidenceRepo(self)
-
-        # C2.1 assembly (P-06): remaining slots — typed placeholders.
-        self.charter: CharterRepoSlot = CharterRepoSlot()
-        self.decisions: DecisionRepoSlot = DecisionRepoSlot()
-        self.search: SearchSlot = SearchSlot()
-        self.integrity: IntegrityService = IntegrityService(self)
+    def __getattr__(self, name: str) -> Any:
+        # C2.1 assembly (A-00): lazy, cached repository slots.  Only
+        # reached for names the normal lookup missed, so ``tx``,
+        # ``close``, ``conn`` and friends behave exactly as before.
+        factories = self.__dict__.get("_repo_factories")
+        if factories is not None and name in factories:
+            repos = self.__dict__.setdefault("_repos", {})
+            if name not in repos:
+                repos[name] = factories[name]()
+            return repos[name]
+        raise AttributeError(f"{type(self).__name__!r} object has no attribute {name!r}")
 
     def tx(self, fn: Callable[[sqlite3.Connection], Any]) -> Any:
         """Run ``fn(conn)`` inside one transaction (C2.5).

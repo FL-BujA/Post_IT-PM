@@ -26,7 +26,6 @@ import pytest
 
 from core.enums import EventKind, ProjectStatus
 from core.errors import (
-    CoreError,
     DataError,
     ServiceError,
     UnknownProjectData,
@@ -35,12 +34,6 @@ from data.db import DataKit
 from data.events import EventRepo
 from data.migrate import migrate
 from data.projects import ProjectRepo
-
-SLOT_NAMES = (
-    "charter",
-    "decisions",
-    "search",
-)
 
 
 def _kit(tmp_path: Any) -> DataKit:
@@ -253,18 +246,6 @@ def test_datakit_assembles_real_projects_and_events(tmp_path: Any) -> None:
     kit = _kit(tmp_path)
     assert type(kit.projects) is ProjectRepo
     assert type(kit.events) is EventRepo
-
-
-@pytest.mark.parametrize("name", SLOT_NAMES)
-def test_datakit_remaining_slots_are_placeholders(tmp_path: Any, name: str) -> None:
-    kit = _kit(tmp_path)
-    slot = getattr(kit, name)
-    # Any attribute access must raise the frozen slot error — deliberately a
-    # CoreError, NOT an AttributeError.
-    with pytest.raises(CoreError) as excinfo:
-        getattr(slot, "create")  # noqa: B009
-    assert excinfo.value.code == "not_implemented_in_this_phase"
-    assert not isinstance(excinfo.value, AttributeError)
 
 
 def test_datakit_holds_one_sqlite_connection(tmp_path: Any) -> None:
