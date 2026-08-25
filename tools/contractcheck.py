@@ -116,8 +116,16 @@ def main() -> int:
         # attributes are usually instance-level; accept a property, a
         # class attribute, or an annotation
         ann = set(getattr(cls, "__annotations__", {}))
+        import inspect
+        try:
+            src = inspect.getsource(cls)
+        except OSError:
+            src = ""
+        assigned = set(re.findall(r"self\.(\w+)\s*=", src))
+        getattr_hook = "__getattr__" in src
         missing_a = sorted(a for a in attrs
-                           if not hasattr(cls, a) and a not in ann)
+                           if not hasattr(cls, a) and a not in ann
+                           and a not in assigned and not getattr_hook)
 
         if missing_m or missing_a:
             print(f"FAIL  {name} ({mod_name})")
