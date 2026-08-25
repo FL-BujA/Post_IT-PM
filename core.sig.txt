@@ -369,13 +369,21 @@ services/actions.py:45: class ActionsSVC
     def change_status(self, project_code: str, action_id: int, new: ActionStatus) -> ActionRow
     def add_signal(self, project_code: str, kind: SignalKind, owner: str, action_id: int | None=None, note: str='') -> SignalRow
     def note_late_start(self, project_code: str, action_id: int) -> SignalRow
-services/compose.py:17: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
-services/compose.py:29: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
-services/compose.py:39: class _Placeholder
+services/compose.py:18: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
+services/compose.py:30: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
+services/compose.py:40: class _Placeholder
     def __init__(self, slot: str) -> None
-services/compose.py:59: class ServiceKit
+services/compose.py:60: class ServiceKit
     def __init__(self, root: str) -> None
     def data(self) -> None
+services/flow.py:32: class FlowService
+    def __init__(self, workspace_root: str) -> None
+    def create_project(self, name: str, sponsor: str, target_date: str, objective: str, charter_text: str='', constraints_text: str='') -> ProjectRow
+    def open_cycle(self, project_code: str, name: str) -> CycleRow
+    def close_cycle(self, project_code: str, gate_id: int) -> CycleRow
+    def record_gate(self, project_code: str, gate_id: int, outcome: GateOutcome, actual_date: str | None=None) -> GateRow
+    def add_action(self, project_code: str, title: str, owner: str, description: str='', priority: int=9, due_start: str | None=None, due_end: str | None=None, cycle_id: int | None=None) -> ActionRow
+    def set_action_status(self, project_code: str, action_id: int, new: ActionStatus) -> ActionRow
 services/phase.py:25: class PhaseSVC
     def __init__(self, workspace_root: str) -> None
     def open_cycle(self, project_code: str, name: str) -> CycleRow
