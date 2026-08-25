@@ -19,7 +19,7 @@ if [ -z "$MSG" ]; then
 fi
 
 case "$MSG" in
-  P-*) ;;
+  P-*|A-*|CC-*) ;;
   *) echo "refusing: message should start with the card id, e.g. \"P-09b: ...\"" >&2
      exit 2 ;;
 esac

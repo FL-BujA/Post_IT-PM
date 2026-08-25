@@ -25,6 +25,16 @@ C30_SLOTS = (
     "integrity_svc",
 )
 
+#: The six C3.1 slots — the frozen api-facing surface (card A-01).
+C31_SLOTS = (
+    "evidence",
+    "flow",
+    "engagement",
+    "report",
+    "backup",
+    "handover",
+)
+
 
 class _Placeholder:
     """Typed placeholder for a C3.0 slot.
@@ -55,7 +65,12 @@ class ServiceKit:
 
     def __init__(self, root: str) -> None:
         self.root = root
+        # Two slot groups coexist (card A-01): the eight C3.0 slots are
+        # internal and predate the contract reading; the six C3.1 slots
+        # are what api/ may call.
         for slot in C30_SLOTS:
+            object.__setattr__(self, slot, _Placeholder(slot))
+        for slot in C31_SLOTS:
             object.__setattr__(self, slot, _Placeholder(slot))
         # P-10a-ii: replace the project_svc placeholder with the real service.
         object.__setattr__(self, "project_svc", ProjectSVC(root))
@@ -63,6 +78,11 @@ class ServiceKit:
         object.__setattr__(self, "phase_svc", PhaseSVC(root))
         # P-11: replace the actions_svc placeholder with the real service.
         object.__setattr__(self, "actions_svc", ActionsSVC(root))
+
+    @property
+    def data(self) -> None:
+        """Read-only data property per C3.1; A-02 wires the real DataKit."""
+        raise CoreError("services slot 'data' is not implemented yet")
 
     def __repr__(self) -> str:
         return f"ServiceKit(root={self.root!r})"
