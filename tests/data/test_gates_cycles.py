@@ -30,6 +30,7 @@ from data.cycles import CycleRepo
 from data.db import DataKit
 from data.gates import GateRepo
 from data.migrate import migrate
+from data.rows import GateRow
 
 
 def _kit(tmp_path: Any) -> DataKit:
@@ -174,6 +175,52 @@ def test_gate_get_unknown_id(tmp_path: Any) -> None:
     with pytest.raises(ServiceError) as excinfo:
         kit.gates.get(99999)
     assert excinfo.value.code == "gate_unknown"
+
+
+
+# ---------------------------------------------------------------------------
+# A-06 — GateRepo.list_for
+# ---------------------------------------------------------------------------
+
+
+def test_gate_list_for_returns_project_gates(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    _project(kit)
+    a = kit.gates.create("P001", "Gate A")
+    b = kit.gates.create("P001", "Gate B")
+
+    rows = kit.gates.list_for("P001")
+    assert [r.id for r in rows] == [a.id, b.id]
+    assert all(isinstance(r, GateRow) for r in rows)
+    assert all(r.project_code == "P001" for r in rows)
+
+
+def test_gate_list_for_ordering_mixed_planned_date(tmp_path: Any) -> None:
+    """planned_date ascending, then id ascending for NULL planned_date."""
+    kit = _kit(tmp_path)
+    _project(kit)
+    g1 = kit.gates.create("P001", "G1", planned_date="2026-10-01")
+    g2 = kit.gates.create("P001", "G2")  # NULL
+    g3 = kit.gates.create("P001", "G3", planned_date="2026-09-01")
+    g4 = kit.gates.create("P001", "G4")  # NULL
+
+    rows = kit.gates.list_for("P001")
+    assert [r.id for r in rows] == [g3.id, g1.id, g2.id, g4.id]
+
+
+def test_gate_list_for_unknown_project_returns_empty(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    _project(kit)
+    kit.gates.create("P001", "Gate A")
+
+    assert kit.gates.list_for("NOPE") == []
+
+
+def test_gate_list_for_project_with_no_gates(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    _project(kit)
+
+    assert kit.gates.list_for("P001") == []
 
 
 # ---------------------------------------------------------------------------

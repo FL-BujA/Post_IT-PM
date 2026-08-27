@@ -134,6 +134,22 @@ class GateRepo:
             )
         return GateRow(*row)
 
+    def list_for(self, project_code: str) -> list[GateRow]:
+        """Return all gates for ``project_code`` (C2.2, A-06).
+
+        Ordered by ``planned_date`` ascending, then ``id`` ascending for
+        gates with no ``planned_date``.  An unknown project code returns
+        an empty list (the snapshot caller needs a list, not an
+        exception).
+        """
+        rows = self._conn.execute(
+            "SELECT id, project_code, event_id, name, outcome, planned_date, "
+            "actual_date, created_at FROM gate WHERE project_code = ? "
+            "ORDER BY (planned_date IS NULL), planned_date ASC, id ASC",
+            (project_code,),
+        ).fetchall()
+        return [GateRow(*row) for row in rows]
+
     # ------------------------------------------------------------------
     # outcome
     # ------------------------------------------------------------------

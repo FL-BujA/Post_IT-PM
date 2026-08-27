@@ -132,9 +132,9 @@ data/cycles.py:58: class CycleRepo
     def get(self, cycle_id: int) -> CycleRow
     def close_cycle(self, cycle_id: int, gate_id: int) -> CycleRow
     def current_for(self, project_code: str) -> CycleRow | None
-data/db.py:35: JOURNAL_MODE = 'wal'
-data/db.py:36: BUSY_TIMEOUT_MS = 5000
-data/db.py:39: class DataKit
+data/db.py:33: JOURNAL_MODE = 'wal'
+data/db.py:34: BUSY_TIMEOUT_MS = 5000
+data/db.py:37: class DataKit
     def __init__(self, path: str | os.PathLike[str]) -> None
     def tx(self, fn: Callable[[sqlite3.Connection], Any]) -> Any
     def close(self) -> None
@@ -163,6 +163,7 @@ data/gates.py:59: class GateRepo
     def __init__(self, kit: _KitLike) -> None
     def create(self, project_code: str, name: str, *, planned_date: str | None=None) -> GateRow
     def get(self, gate_id: int) -> GateRow
+    def list_for(self, project_code: str) -> list[GateRow]
     def record_outcome(self, gate_id: int, outcome: GateOutcome | str) -> GateRow
 data/integrity.py:29: class _KitLike(Protocol)
     conn: object
