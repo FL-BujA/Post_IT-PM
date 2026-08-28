@@ -370,13 +370,43 @@ services/actions.py:45: class ActionsSVC
     def change_status(self, project_code: str, action_id: int, new: ActionStatus) -> ActionRow
     def add_signal(self, project_code: str, kind: SignalKind, owner: str, action_id: int | None=None, note: str='') -> SignalRow
     def note_late_start(self, project_code: str, action_id: int) -> SignalRow
-services/compose.py:19: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
-services/compose.py:31: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
-services/compose.py:41: class _Placeholder
+services/backup.py:38: BACKUP_TREES = ('evidence', 'reports')
+services/backup.py:41: DB_NAME = 'app.db'
+services/backup.py:44: MANIFEST_NAME = 'MANIFEST.json'
+services/backup.py:47: BACKUPS_DIR = 'backups'
+services/backup.py:51: class BackupDescriptor
+    count_files: int
+    dest: str
+    ok: bool = True
+services/backup.py:60: class RestoreReport
+    ok: bool
+    verified_ok: bool
+    missing_count: int
+    mismatch_count: int
+    orphan_count: int
+services/backup.py:70: class BackupService
+    def __init__(self, workspace_root: str) -> None
+    def create_backup(self, label: str | None=None, dest_dir: str | None=None) -> BackupDescriptor
+    def restore(self, backup_dir: str) -> RestoreReport
+services/compose.py:21: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
+services/compose.py:33: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
+services/compose.py:43: class _Placeholder
     def __init__(self, slot: str) -> None
-services/compose.py:61: class ServiceKit
+services/compose.py:63: class ServiceKit
     def __init__(self, root: str) -> None
     def data(self) -> None
+services/engagement.py:23: SIGNAL_EVENT_KIND = 'SIGNAL'
+services/engagement.py:27: class OwnerHealth
+    owner: str
+    counts: dict[SignalKind, int] = field(default_factory=dict)
+    total: int = 0
+    open_total: int = 0
+services/engagement.py:41: class EngagementService
+    def __init__(self, workspace_root: str) -> None
+    def record(self, project_code: str, kind: SignalKind, owner: str, action_id: int | None=None, note: str='') -> SignalRow
+    def mark_resolved(self, project_code: str, signal_id: int, resolved: bool=True) -> SignalRow
+    def health_by_owner(self, project_code: str) -> list[OwnerHealth]
+    def list_for(self, project_code: str, kind: SignalKind | str | None=None, owner: str | None=None, resolved: bool | None=None) -> list[SignalRow]
 services/evidence.py:33: EVIDENCE_DIR = 'evidence'
 services/evidence.py:37: EVIDENCE_EVENT_KIND = 'EVIDENCE'
 services/evidence.py:40: class EvidenceService

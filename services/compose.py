@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from core import CoreError
 from services.actions import ActionsSVC
+from services.backup import BackupService
+from services.engagement import EngagementService
 from services.evidence import EvidenceService
 from services.flow import FlowService
 from services.phase import PhaseSVC
@@ -84,6 +86,10 @@ class ServiceKit:
         object.__setattr__(self, "flow", FlowService(root))
         # A-05: replace the evidence placeholder with the real EvidenceService.
         object.__setattr__(self, "evidence", EvidenceService(root))
+        # A-04: replace the engagement placeholder with the real service.
+        object.__setattr__(self, "engagement", EngagementService(root))
+        # A-07: replace the backup placeholder with the real service.
+        object.__setattr__(self, "backup", BackupService(root))
 
     @property
     def data(self) -> None:
