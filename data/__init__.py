@@ -27,7 +27,10 @@ from data.rows import (
     EvidenceRow,
     GateItemRow,
     GateRow,
+    MinutesRow,
     ProjectRow,
+    ReportRow,
+    SignalRow,
 )
 
 __all__ = [
@@ -57,8 +60,11 @@ __all__ = [
     "IntegrityReport",
     "IntegrityService",
     "IntegritySlot",
+    "MinutesRow",
     "ProjectRepo",
     "ProjectRow",
+    "ReportRow",
+    "SignalRow",
     "SearchSlot",
     "migrate",
 ]

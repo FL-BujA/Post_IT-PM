@@ -377,7 +377,19 @@ services/compose.py:40: class _Placeholder
 services/compose.py:60: class ServiceKit
     def __init__(self, root: str) -> None
     def data(self) -> None
-services/flow.py:32: class FlowService
+services/flow.py:40: _OPEN_GATE_OUTCOMES = frozenset({'', 'planned', str(GateOutcome.PLANNED), GateOutcome.PLANNED.value})
+services/flow.py:45: _MAX_EVENTS = 20
+services/flow.py:46: _MAX_MINUTES = 5
+services/flow.py:47: _MAX_SIGNALS = 10
+services/flow.py:51: class ProjectSnapshot
+    project: ProjectRow
+    current_cycle: CycleRow | None
+    actions: list[ActionRow]
+    open_gates: list[GateRow]
+    events: list[EventRow]
+    minutes: list[MinutesRow]
+    signals: list[SignalRow]
+services/flow.py:72: class FlowService
     def __init__(self, workspace_root: str) -> None
     def create_project(self, name: str, sponsor: str, target_date: str, objective: str, charter_text: str='', constraints_text: str='') -> ProjectRow
     def open_cycle(self, project_code: str, name: str) -> CycleRow
@@ -385,6 +397,8 @@ services/flow.py:32: class FlowService
     def record_gate(self, project_code: str, gate_id: int, outcome: GateOutcome, actual_date: str | None=None) -> GateRow
     def add_action(self, project_code: str, title: str, owner: str, description: str='', priority: int=9, due_start: str | None=None, due_end: str | None=None, cycle_id: int | None=None) -> ActionRow
     def set_action_status(self, project_code: str, action_id: int, new: ActionStatus) -> ActionRow
+    def add_minutes(self, project_code: str, held_at: str, attendees: str | None, decisions: str | None, agreed_actions: str | None, risks: str | None, minutes_text: str, cycle_id: int | None=None) -> MinutesRow
+    def list_for_project(self, project_code: str) -> ProjectSnapshot
 services/phase.py:25: class PhaseSVC
     def __init__(self, workspace_root: str) -> None
     def open_cycle(self, project_code: str, name: str) -> CycleRow
