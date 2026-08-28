@@ -370,13 +370,20 @@ services/actions.py:45: class ActionsSVC
     def change_status(self, project_code: str, action_id: int, new: ActionStatus) -> ActionRow
     def add_signal(self, project_code: str, kind: SignalKind, owner: str, action_id: int | None=None, note: str='') -> SignalRow
     def note_late_start(self, project_code: str, action_id: int) -> SignalRow
-services/compose.py:18: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
-services/compose.py:30: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
-services/compose.py:40: class _Placeholder
+services/compose.py:19: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
+services/compose.py:31: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
+services/compose.py:41: class _Placeholder
     def __init__(self, slot: str) -> None
-services/compose.py:60: class ServiceKit
+services/compose.py:61: class ServiceKit
     def __init__(self, root: str) -> None
     def data(self) -> None
+services/evidence.py:33: EVIDENCE_DIR = 'evidence'
+services/evidence.py:37: EVIDENCE_EVENT_KIND = 'EVIDENCE'
+services/evidence.py:40: class EvidenceService
+    def __init__(self, workspace_root: str) -> None
+    def attach(self, project_code: str, source_path: str, source_type: SourceType, note: str='') -> EvidenceRow
+    def open_path(self, project_code: str, rel_path: str) -> str
+    def list_for(self, project_code: str) -> list[EvidenceRow]
 services/flow.py:40: _OPEN_GATE_OUTCOMES = frozenset({'', 'planned', str(GateOutcome.PLANNED), GateOutcome.PLANNED.value})
 services/flow.py:45: _MAX_EVENTS = 20
 services/flow.py:46: _MAX_MINUTES = 5
