@@ -490,6 +490,36 @@ services/report.py:92: class ReportService
 api/app.py:26: NOT_FOUND_CODES = frozenset({'unknown_project', 'not_found', 'signal_unknown', 'evidence_unknown'})
 api/app.py:31: CONFLICT_CODES = frozenset({'evidence_conflict'})
 api/app.py:49: def create_app(kit: Any) -> FastAPI
+api/routes_actions.py:32: class CreateActionBody(BaseModel)
+    title: str
+    owner: str
+    description: str = ''
+    priority: int = 9
+    due_start: str | None = None
+    due_end: str | None = None
+    cycle_id: int | None = None
+api/routes_actions.py:42: class PatchActionBody(BaseModel)
+    status: str
+api/routes_actions.py:49: class CreateCycleBody(BaseModel)
+    name: str
+api/routes_actions.py:53: class CloseCycleBody(BaseModel)
+    gate_id: int
+api/routes_actions.py:57: class CreateGateBody(BaseModel)
+    name: str
+    planned_date: str | None = None
+    exit_criteria: str = ''
+    notes: str = ''
+api/routes_actions.py:64: class GateOutcomeBody(BaseModel)
+    outcome: str
+    actual_date: str | None = None
+api/routes_actions.py:73: async def create_action(request: Request, code: str, body: CreateActionBody) -> dict[str, Any]
+api/routes_actions.py:92: async def patch_action(request: Request, code: str, action_id: int, body: PatchActionBody) -> dict[str, Any]
+api/routes_actions.py:103: async def list_actions(request: Request, code: str) -> dict[str, Any]
+api/routes_actions.py:123: async def open_cycle(request: Request, code: str, body: CreateCycleBody) -> dict[str, Any]
+api/routes_actions.py:134: async def close_cycle(request: Request, code: str, cycle_id: int, body: CloseCycleBody) -> dict[str, Any]
+api/routes_actions.py:153: async def create_gate(request: Request, code: str, body: CreateGateBody) -> dict[str, Any]
+api/routes_actions.py:174: async def record_gate_outcome(request: Request, code: str, gate_id: int, body: GateOutcomeBody) -> dict[str, Any]
+api/routes_actions.py:187: async def list_gates(request: Request, code: str) -> dict[str, Any]
 api/routes_projects.py:27: DEFAULT_SOURCE_TYPE = 'other'
 api/routes_projects.py:37: class CreateProjectBody(BaseModel)
     name: str
@@ -509,6 +539,53 @@ api/routes_projects.py:93: async def set_status(request: Request, code: str, bod
 api/routes_projects.py:104: async def set_sponsor(request: Request, code: str, body: SetSponsorBody) -> dict[str, Any]
 api/routes_projects.py:117: async def attach_evidence(request: Request, code: str, file: UploadFile=File(...), source_type: str=Form(DEFAULT_SOURCE_TYPE), note: str=Form('')) -> dict[str, Any]
 api/routes_projects.py:145: async def list_evidence(request: Request, code: str) -> dict[str, Any]
+api/routes_reports.py:27: MINUTES_DEFAULT = 20
+api/routes_reports.py:28: MINUTES_MAX = 100
+api/routes_reports.py:31: REPORTS_LIMIT = 20
+api/routes_reports.py:34: OPEN_INTENT = 'explorer'
+api/routes_reports.py:44: class CreateMinutesBody(BaseModel)
+    held_at: str
+    attendees: str | None = None
+    decisions: str | None = None
+    agreed_actions: str | None = None
+    risks: str | None = None
+    minutes_text: str
+    cycle_id: int | None = None
+api/routes_reports.py:54: class CreateSignalBody(BaseModel)
+    kind: str
+    owner: str
+    action_id: int | None = None
+    note: str = ''
+api/routes_reports.py:61: class ResolveSignalBody(BaseModel)
+    resolved: bool
+api/routes_reports.py:65: class ReportBody(BaseModel)
+    prepared_for: str | None = None
+api/routes_reports.py:69: class BackupBody(BaseModel)
+    label: str | None = None
+    dest_dir: str | None = None
+api/routes_reports.py:74: class RestoreBody(BaseModel)
+    backup_dir: str
+api/routes_reports.py:78: class HandoverBody(BaseModel)
+    dest_dir: str | None = None
+api/routes_reports.py:86: async def add_minutes(request: Request, code: str, body: CreateMinutesBody) -> dict[str, Any]
+api/routes_reports.py:106: async def list_minutes(request: Request, code: str, limit: int=Query(MINUTES_DEFAULT, ge=1, le=MINUTES_MAX)) -> dict[str, Any]
+api/routes_reports.py:125: async def add_signal(request: Request, code: str, body: CreateSignalBody) -> dict[str, Any]
+api/routes_reports.py:138: async def resolve_signal(request: Request, code: str, signal_id: int, body: ResolveSignalBody) -> dict[str, Any]
+api/routes_reports.py:148: async def list_signals(request: Request, code: str, kind: str | None=None, owner: str | None=None, resolved: bool | None=None) -> dict[str, Any]
+api/routes_reports.py:164: async def engagement_health(request: Request, code: str) -> dict[str, Any]
+api/routes_reports.py:179: async def generate_report(request: Request, code: str, body: ReportBody) -> dict[str, Any]
+api/routes_reports.py:193: async def list_reports(request: Request, code: str) -> dict[str, Any]
+api/routes_reports.py:208: async def search(request: Request, terms: str, project: str | None=None, limit: int=Query(50, ge=1, le=200)) -> dict[str, Any]
+api/routes_reports.py:225: async def create_backup(request: Request, body: BackupBody) -> dict[str, Any]
+api/routes_reports.py:241: async def restore(request: Request, body: RestoreBody) -> dict[str, Any]
+api/routes_reports.py:258: async def handover(request: Request, code: str, body: HandoverBody) -> dict[str, Any]
+api/routes_reports.py:273: async def integrity(request: Request) -> dict[str, Any]
+api/server.py:18: HOST = '127.0.0.1'
+api/server.py:21: DEFAULT_PORT = 8765
+api/server.py:24: CONFIG_NAME = 'config.json'
+api/server.py:27: def read_config(workspace_root: str) -> dict[str, Any]
+api/server.py:54: def run_config(port: int | None=None) -> dict[str, Any]
+api/server.py:64: def run(app: Any, port: int | None=None) -> None
 api/views.py:42: SNAPSHOT_EVENTS = 20
 api/views.py:50: def project_view(row: Any) -> dict[str, Any]
 api/views.py:63: def action_view(row: Any) -> dict[str, Any]
@@ -523,3 +600,31 @@ api/views.py:181: def snapshot_view(snapshot: Any) -> dict[str, Any]
 api/views.py:198: def owner_health_view(health: Any) -> dict[str, Any]
 api/views.py:210: def hit_view(hit: Any) -> dict[str, Any]
 api/views.py:219: def integrity_view(report: Any, cap: int=50) -> dict[str, Any]
+
+# ---- app/ ----
+app/config.py:20: CONFIG_NAME = 'config.json'
+app/config.py:21: DEFAULT_PORT = 8765
+app/config.py:22: DEFAULT_THEME = 'dark'
+app/config.py:25: LOOPBACK = ('127.0.0.1', 'localhost', '::1')
+app/config.py:28: class ConfigError(CoreError)
+    code = 'config'
+app/config.py:35: class AppConfig
+    workspace: str
+    port: int = DEFAULT_PORT
+    theme: str = DEFAULT_THEME
+    path: str = ''
+app/config.py:44: def default_workspace() -> str
+app/config.py:50: def read(workdir: str | None=None) -> AppConfig
+app/main.py:26: STARTUP_GRACE_SECONDS = 1.0
+app/main.py:29: def build(workdir: str | None=None) -> tuple[Any, str, int]
+app/main.py:42: def run(workdir: str | None=None, port: int | None=None, open_ui: bool=True) -> None
+app/root.py:25: class WiredConfig
+    data: bool = True
+    services: bool = True
+    renderer: bool = False
+app/root.py:34: def build_kit(workspace_root: str, wired: WiredConfig | None=None) -> ServiceKit
+app/root.py:55: def renderer_for(wired: WiredConfig | None=None) -> object
+app/window.py:17: TITLE = 'PM Cockpit'
+app/window.py:18: WIDTH = 1280
+app/window.py:19: HEIGHT = 860
+app/window.py:22: def window(url: str, title: str=TITLE, blocking: bool=True) -> bool
