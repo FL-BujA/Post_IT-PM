@@ -102,4 +102,7 @@ def create_app(kit: Any) -> FastAPI:
             "projects": len(kit.data.projects.list()),
         }
 
+    from api.routes_projects import router as projects_router
+    app.include_router(projects_router)
+
     return app
