@@ -151,6 +151,8 @@ CREATE TABLE gate (
     outcome       TEXT NOT NULL,
     planned_date  TEXT,
     actual_date   TEXT,
+    exit_criteria TEXT,
+    notes         TEXT,
     created_at    TEXT NOT NULL
 );
 
@@ -243,6 +245,20 @@ def _schema_version(conn: sqlite3.Connection) -> str | None:
     return row[0] if row is not None else None
 
 
+def _ensure_gate_columns(conn: sqlite3.Connection) -> None:
+    """Idempotent ALTER path (A-12): add ``exit_criteria`` / ``notes`` to
+    an existing ``gate`` table that predates them.  A PRAGMA table_info
+    check first; ALTER TABLE only for each absent column.  Never drops
+    or recreates the table."""
+    existing = {
+        r[1] for r in conn.execute("PRAGMA table_info(gate)").fetchall()
+    }
+    for column in ("exit_criteria", "notes"):
+        if column not in existing:
+            conn.execute(f"ALTER TABLE gate ADD COLUMN {column} TEXT")
+    conn.commit()
+
+
 def migrate(path: str | os.PathLike[str]) -> int:
     """Bring the file at ``path`` to schema version ``'1'`` (C2.4).
 
@@ -261,7 +277,7 @@ def migrate(path: str | os.PathLike[str]) -> int:
         if version is None:
             _create_all(conn)
         elif version == SCHEMA_VERSION:
-            pass  # idempotent: nothing to do
+            _ensure_gate_columns(conn)  # idempotent: no-op when present
         else:
             raise CoreError(
                 f"unknown schema version {version!r}", code="unknown_schema"

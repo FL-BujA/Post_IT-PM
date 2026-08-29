@@ -73,11 +73,15 @@ class GateRepo:
         name: str,
         *,
         planned_date: str | None = None,
+        exit_criteria: str = "",
+        notes: str = "",
     ) -> GateRow:
         """Insert a new gate in the ``planned`` state and return it.
 
         ``planned_date`` is optional (NULL allowed, P-07).  An unknown
-        project code raises ``UnknownProjectData``.
+        project code raises ``UnknownProjectData``.  ``exit_criteria``
+        and ``notes`` are stored verbatim (A-12); both default to ``""``
+        so existing callers are unaffected.
         """
         self._require_project(project_code)
         ts = _ts()
