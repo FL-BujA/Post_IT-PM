@@ -388,11 +388,11 @@ services/backup.py:70: class BackupService
     def __init__(self, workspace_root: str) -> None
     def create_backup(self, label: str | None=None, dest_dir: str | None=None) -> BackupDescriptor
     def restore(self, backup_dir: str) -> RestoreReport
-services/compose.py:21: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
-services/compose.py:33: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
-services/compose.py:43: class _Placeholder
+services/compose.py:27: C30_SLOTS = ('project_svc', 'phase_svc', 'actions_svc', 'evidence_svc', 'minutes_svc', 'report_svc', 'backup_svc', 'integrity_svc')
+services/compose.py:39: C31_SLOTS = ('evidence', 'flow', 'engagement', 'report', 'backup', 'handover')
+services/compose.py:49: class _Placeholder
     def __init__(self, slot: str) -> None
-services/compose.py:63: class ServiceKit
+services/compose.py:69: class ServiceKit
     def __init__(self, root: str) -> None
     def data(self) -> None
 services/engagement.py:23: SIGNAL_EVENT_KIND = 'SIGNAL'
@@ -436,6 +436,14 @@ services/flow.py:72: class FlowService
     def set_action_status(self, project_code: str, action_id: int, new: ActionStatus) -> ActionRow
     def add_minutes(self, project_code: str, held_at: str, attendees: str | None, decisions: str | None, agreed_actions: str | None, risks: str | None, minutes_text: str, cycle_id: int | None=None) -> MinutesRow
     def list_for_project(self, project_code: str) -> ProjectSnapshot
+services/handover.py:24: HANDOVER_TREES = ('evidence', 'reports')
+services/handover.py:27: DB_SLICE_NAME = 'db_slice.json'
+services/handover.py:28: STORY_NAME = 'story.md'
+services/handover.py:29: MANIFEST_NAME = 'manifest.json'
+services/handover.py:32: _UNRESOLVED_HEADING = 'Unresolved signals'
+services/handover.py:35: class HandoverService
+    def __init__(self, workspace_root: str) -> None
+    def export(self, project_code: str, dest_dir: str) -> str
 services/phase.py:25: class PhaseSVC
     def __init__(self, workspace_root: str) -> None
     def open_cycle(self, project_code: str, name: str) -> CycleRow
@@ -446,3 +454,52 @@ services/projects.py:53: class ProjectSVC
     def __init__(self, workspace_root: str) -> None
     def create_project(self, name: str, target_date: str, sponsor: str='TBD', objective: str='', charter_text: str='', constraints_text: str='') -> ProjectRow
     def update_project(self, code: str, name: str | None=None, target: str | None=None, prepared_for: str | None=None) -> ProjectRow
+services/renderer_stub.py:24: STUB_TOKEN = 'STUB-REPORT'
+services/renderer_stub.py:28: _STUB_PDF = b'%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n'
+services/renderer_stub.py:38: class StubRenderer
+    def to_html(self, payload: Any) -> str
+    def to_pdf(self, html_text: str) -> bytes
+services/report.py:35: MAX_PRIORITIES = 5
+services/report.py:36: MAX_ESCALATIONS = 3
+services/report.py:39: RECENT_SIGNAL_DAYS = 14
+services/report.py:40: REPEATED_REOPEN = 2
+services/report.py:43: STALLED_CYCLE_DAYS = 30
+services/report.py:46: ESCALATING_KINDS = (SignalKind.EXTENSION_REQUEST, SignalKind.REOPEN)
+services/report.py:49: LIVE_STATUSES = ('open', 'in_progress')
+services/report.py:52: REPORTS_DIR = 'reports'
+services/report.py:56: class RedFlag
+    code: str
+    detail: str
+    ref: Any = None
+services/report.py:65: class ReportPayload
+    project: ProjectRow
+    status: str
+    target_date: str | None
+    current_cycle: CycleRow | None
+    priorities: list[ActionRow] = field(default_factory=list)
+    red_flags: list[RedFlag] = field(default_factory=list)
+    escalations: list[SignalRow] = field(default_factory=list)
+    health: list[OwnerHealth] = field(default_factory=list)
+    prepared_for: str | None = None
+services/report.py:92: class ReportService
+    def __init__(self, workspace_root: str, renderer: Any) -> None
+    def generate(self, project_code: str, prepared_for: str | None=None) -> ReportRow
+
+# ---- api/ ----
+api/app.py:26: NOT_FOUND_CODES = frozenset({'unknown_project', 'not_found', 'signal_unknown', 'evidence_unknown'})
+api/app.py:31: CONFLICT_CODES = frozenset({'evidence_conflict'})
+api/app.py:49: def create_app(kit: Any) -> FastAPI
+api/views.py:42: SNAPSHOT_EVENTS = 20
+api/views.py:50: def project_view(row: Any) -> dict[str, Any]
+api/views.py:63: def action_view(row: Any) -> dict[str, Any]
+api/views.py:82: def evidence_view(row: Any) -> dict[str, Any]
+api/views.py:97: def cycle_view(row: Any) -> dict[str, Any]
+api/views.py:109: def gate_view(row: Any) -> dict[str, Any]
+api/views.py:123: def minutes_view(row: Any) -> dict[str, Any]
+api/views.py:138: def signal_view(row: Any) -> dict[str, Any]
+api/views.py:153: def report_view(row: Any) -> dict[str, Any]
+api/views.py:166: def event_view(row: Any) -> dict[str, Any]
+api/views.py:181: def snapshot_view(snapshot: Any) -> dict[str, Any]
+api/views.py:198: def owner_health_view(health: Any) -> dict[str, Any]
+api/views.py:210: def hit_view(hit: Any) -> dict[str, Any]
+api/views.py:219: def integrity_view(report: Any, cap: int=50) -> dict[str, Any]

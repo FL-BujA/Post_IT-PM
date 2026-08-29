@@ -11,6 +11,12 @@ from core import CoreError
 from services.actions import ActionsSVC
 from services.backup import BackupService
 from services.engagement import EngagementService
+from services.handover import HandoverService
+from services.renderer_stub import StubRenderer
+from services.report import ReportService
+from services.handover import HandoverService
+from services.renderer_stub import StubRenderer
+from services.report import ReportService
 from services.evidence import EvidenceService
 from services.flow import FlowService
 from services.phase import PhaseSVC
@@ -90,6 +96,14 @@ class ServiceKit:
         object.__setattr__(self, "engagement", EngagementService(root))
         # A-07: replace the backup placeholder with the real service.
         object.__setattr__(self, "backup", BackupService(root))
+        # A-08: replace the handover placeholder with the real service.
+        object.__setattr__(self, "handover", HandoverService(root))
+        # A-09: report, wired to the C3.6 stub renderer for now.
+        object.__setattr__(self, "report", ReportService(root, StubRenderer()))
+        # A-08: replace the handover placeholder with the real service.
+        object.__setattr__(self, "handover", HandoverService(root))
+        # A-09: report, wired to the C3.6 stub renderer for now.
+        object.__setattr__(self, "report", ReportService(root, StubRenderer()))
 
     @property
     def data(self) -> None:
