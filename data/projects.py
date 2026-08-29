@@ -161,3 +161,19 @@ class ProjectRepo:
         if updated.rowcount == 0:
             raise UnknownProjectData(f"no project with code {code!r}")
         return self.get(code)
+
+    def set_sponsor(self, code: str, sponsor: str | None) -> ProjectRow:
+        """Change a project's sponsor (the "prepared for" source, C3.5).
+
+        ``sponsor`` may be ``None`` (stored as NULL) or any string,
+        including the empty string, which is stored as given.  An
+        unknown project code raises ``UnknownProjectData``.
+        """
+        ts = _ts()
+        updated = self._conn.execute(
+            "UPDATE project SET sponsor = ?, updated_at = ? WHERE code = ?",
+            (sponsor, ts, code),
+        )
+        if updated.rowcount == 0:
+            raise UnknownProjectData(f"no project with code {code!r}")
+        return self.get(code)

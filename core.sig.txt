@@ -199,6 +199,7 @@ data/projects.py:44: class ProjectRepo
     def get(self, code: str) -> ProjectRow
     def list(self) -> list[ProjectRow]
     def set_status(self, code: str, status: ProjectStatus | str) -> ProjectRow
+    def set_sponsor(self, code: str, sponsor: str | None) -> ProjectRow
 data/reports_history.py:24: class _KitLike(Protocol)
     conn: sqlite3.Connection
     def tx(self, fn: object) -> object

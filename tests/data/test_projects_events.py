@@ -115,6 +115,54 @@ def test_project_set_status_unknown_project(tmp_path: Any) -> None:
 
 
 # ---------------------------------------------------------------------------
+# A-11 — ProjectRepo.set_sponsor
+# ---------------------------------------------------------------------------
+
+
+def test_set_sponsor_round_trip(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    kit.projects.create("P001", "Alpha")
+    updated = kit.projects.set_sponsor("P001", "Acme Corp")
+    assert updated.sponsor == "Acme Corp"
+    # Read the row back through get() and assert the value.
+    assert kit.projects.get("P001").sponsor == "Acme Corp"
+    # A different sponsor replaces rather than appends.
+    replaced = kit.projects.set_sponsor("P001", "Globex Ltd")
+    assert replaced.sponsor == "Globex Ltd"
+    assert kit.projects.get("P001").sponsor == "Globex Ltd"
+
+
+def test_set_sponsor_none_stores_null(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    kit.projects.create("P001", "Alpha", sponsor="Acme Corp")
+    updated = kit.projects.set_sponsor("P001", None)
+    assert updated.sponsor is None
+    stored = kit.conn.execute(
+        "SELECT sponsor FROM project WHERE code = ?", ("P001",)
+    ).fetchone()
+    assert stored == (None,)
+
+
+def test_set_sponsor_empty_string_stored_as_given(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    kit.projects.create("P001", "Alpha")
+    updated = kit.projects.set_sponsor("P001", "")
+    assert updated.sponsor == ""
+    stored = kit.conn.execute(
+        "SELECT sponsor FROM project WHERE code = ?", ("P001",)
+    ).fetchone()
+    assert stored == ("",)
+
+
+def test_set_sponsor_unknown_project(tmp_path: Any) -> None:
+    kit = _kit(tmp_path)
+    with pytest.raises(UnknownProjectData) as excinfo:
+        kit.projects.set_sponsor("NOPE", "Acme Corp")
+    assert isinstance(excinfo.value, DataError)
+    assert excinfo.value.code == "unknown_project"
+
+
+# ---------------------------------------------------------------------------
 # P-06 — EventRepo
 # ---------------------------------------------------------------------------
 
