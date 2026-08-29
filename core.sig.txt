@@ -395,7 +395,7 @@ services/compose.py:49: class _Placeholder
     def __init__(self, slot: str) -> None
 services/compose.py:69: class ServiceKit
     def __init__(self, root: str) -> None
-    def data(self) -> None
+    def data(self)
 services/engagement.py:23: SIGNAL_EVENT_KIND = 'SIGNAL'
 services/engagement.py:27: class OwnerHealth
     owner: str
@@ -586,6 +586,8 @@ api/server.py:24: CONFIG_NAME = 'config.json'
 api/server.py:27: def read_config(workspace_root: str) -> dict[str, Any]
 api/server.py:54: def run_config(port: int | None=None) -> dict[str, Any]
 api/server.py:64: def run(app: Any, port: int | None=None) -> None
+api/static.py:11: UI_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'ui')
+api/static.py:16: def mount(app: FastAPI) -> None
 api/views.py:42: SNAPSHOT_EVENTS = 20
 api/views.py:50: def project_view(row: Any) -> dict[str, Any]
 api/views.py:63: def action_view(row: Any) -> dict[str, Any]

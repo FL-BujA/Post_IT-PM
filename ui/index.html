@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PM Cockpit</title>
+  <link rel="stylesheet" href="/static/prism.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="brand">PM Cockpit</span>
+
+    <select id="project-switcher" class="project-switcher" aria-label="Project">
+      <option value="">Loading projects…</option>
+    </select>
+
+    <input id="search" class="search" type="search"
+           placeholder="Search minutes, evidence and events"
+           aria-label="Search">
+
+    <span class="spacer"></span>
+
+    <button id="theme-toggle" class="icon-button" type="button"
+            aria-label="Toggle theme">Light</button>
+  </header>
+
+  <div class="shell">
+
+    <nav class="nav" aria-label="Views">
+      <button type="button" data-view="timeline"   aria-current="page">Timeline</button>
+      <button type="button" data-view="board">Board</button>
+      <button type="button" data-view="meetings">Meetings</button>
+      <button type="button" data-view="evidence">Evidence</button>
+      <button type="button" data-view="report">Report</button>
+      <button type="button" data-view="engagement">Engagement</button>
+    </nav>
+
+    <main class="views">
+
+      <section id="view-timeline" class="view">
+        <h2>Timeline</h2>
+        <div id="timeline-body" class="empty">Select a project to see its story.</div>
+      </section>
+
+      <section id="view-board" class="view" hidden>
+        <h2>Board</h2>
+        <div id="board-body" class="empty">No actions yet.</div>
+      </section>
+
+      <section id="view-meetings" class="view" hidden>
+        <h2>Meetings</h2>
+        <div id="meetings-body" class="empty">No minutes recorded.</div>
+      </section>
+
+      <section id="view-evidence" class="view" hidden>
+        <h2>Evidence</h2>
+        <div id="evidence-body" class="empty">Nothing attached yet.</div>
+      </section>
+
+      <section id="view-report" class="view" hidden>
+        <h2>Report</h2>
+        <div id="report-body" class="empty">No reports generated.</div>
+      </section>
+
+      <section id="view-engagement" class="view" hidden>
+        <h2>Engagement</h2>
+        <div id="engagement-body" class="empty">No signals logged.</div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

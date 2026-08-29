@@ -82,7 +82,17 @@ def test_c31_attribute_set() -> None:
         assert hasattr(kit, slot)
 
 
-def test_data_property_raises_coreerror() -> None:
-    kit = ServiceKit("/tmp/some/workspace")
-    with pytest.raises(CoreError):
-        _ = kit.data
+def test_data_property_returns_datakit(tmp_path) -> None:
+    """A-18 wired the C3.1 data property to a real DataKit.
+
+    A-01 asserted it raised CoreError; that was correct while it was a
+    placeholder and is not the behaviour any more. What matters now is
+    that it hands back the kit the api reads through, and that it is
+    lazy: constructing a ServiceKit must not open a database.
+    """
+    from data import DataKit
+
+    kit = ServiceKit(str(tmp_path))
+    assert not (tmp_path / "app.db").exists()   # nothing opened yet
+    assert isinstance(kit.data, DataKit)
+    assert kit.data is kit.data                 # built once, cached

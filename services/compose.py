@@ -100,15 +100,21 @@ class ServiceKit:
         object.__setattr__(self, "handover", HandoverService(root))
         # A-09: report, wired to the C3.6 stub renderer for now.
         object.__setattr__(self, "report", ReportService(root, StubRenderer()))
-        # A-08: replace the handover placeholder with the real service.
-        object.__setattr__(self, "handover", HandoverService(root))
-        # A-09: report, wired to the C3.6 stub renderer for now.
-        object.__setattr__(self, "report", ReportService(root, StubRenderer()))
 
     @property
-    def data(self) -> None:
-        """Read-only data property per C3.1; A-02 wires the real DataKit."""
-        raise CoreError("services slot 'data' is not implemented yet")
+    def data(self):
+        """C3.1: the DataKit, exposed read-only for api queries.
+
+        Built lazily so constructing a ServiceKit never opens a database.
+        """
+        if getattr(self, "_data_kit", None) is None:
+            import os
+            from data import DataKit
+            from data.migrate import migrate
+            db_path = os.path.join(self.root, "app.db")
+            migrate(db_path)
+            object.__setattr__(self, "_data_kit", DataKit(db_path))
+        return self._data_kit
 
     def __repr__(self) -> str:
         return f"ServiceKit(root={self.root!r})"

@@ -108,5 +108,7 @@ def create_app(kit: Any) -> FastAPI:
     app.include_router(actions_router)
     from api.routes_reports import router as reports_router
     app.include_router(reports_router)
+    from api.static import mount as mount_ui
+    mount_ui(app)
 
     return app
