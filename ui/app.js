@@ -1,3 +1,5 @@
+import { renderMeetings } from "/static/views/meetings.js";
+import { renderEngagement } from "/static/views/engagement.js";
 import { renderEvidence } from "/static/views/evidence.js";
 import { renderBoard } from "/static/views/board.js";
 import { renderTimeline } from "/static/views/timeline.js";
@@ -159,6 +161,19 @@ async function render() {
       onMove: (id, status) => api(`/projects/${state.project}/actions/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) }),
       onError: (e) => toast(String(e.message), "error"),
     });
+    return;
+  }
+  if (state.view === "meetings") {
+    const { minutes } = await api(`/projects/${state.project}/minutes`);
+    renderMeetings(body, minutes, {
+      onAdd: (b) => api(`/projects/${state.project}/minutes`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) }).then(() => render()),
+      onError: (e) => toast(String(e.message), "error"),
+    });
+    return;
+  }
+  if (state.view === "engagement") {
+    const { health } = await api(`/projects/${state.project}/engagement/health`);
+    renderEngagement(body, health);
     return;
   }
   const n = counts[state.view];
