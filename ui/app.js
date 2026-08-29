@@ -1,3 +1,4 @@
+import { renderReport } from "/static/views/report.js";
 import { renderMeetings } from "/static/views/meetings.js";
 import { renderEngagement } from "/static/views/engagement.js";
 import { renderEvidence } from "/static/views/evidence.js";
@@ -174,6 +175,16 @@ async function render() {
   if (state.view === "engagement") {
     const { health } = await api(`/projects/${state.project}/engagement/health`);
     renderEngagement(body, health);
+    return;
+  }
+  if (state.view === "report") {
+    const { reports } = await api(`/projects/${state.project}/reports`);
+    renderReport(body, reports, {
+      sponsor: snapshot.project.sponsor,
+      onGenerate: (pf) => api(`/projects/${state.project}/report`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prepared_for: pf }) }).then(() => render()),
+      onOpen: (rel) => api(`/ui/open?rel_path=${encodeURIComponent(rel)}`),
+      onError: (e) => toast(String(e.message), "error"),
+    });
     return;
   }
   const n = counts[state.view];
