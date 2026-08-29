@@ -1,3 +1,4 @@
+import { renderEvidence } from "/static/views/evidence.js";
 import { renderBoard } from "/static/views/board.js";
 import { renderTimeline } from "/static/views/timeline.js";
 /* ui/app.js — the shell: view switching, the project switcher, the theme,

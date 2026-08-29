@@ -315,3 +315,68 @@ code, .mono { font-family: var(--font-mono); }
   color: var(--text-muted);
   font-size: 13px;
 }
+
+/* ---- evidence view ---------------------------------------------------- */
+
+.attach { display: flex; flex-direction: column; gap: var(--space-3); }
+.attach-row { display: flex; gap: var(--space-3); align-items: center; }
+.attach input[type="text"],
+.attach select,
+.attach input[type="file"] {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-ctl);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+  font: inherit;
+}
+.attach input[type="text"] { flex: 1; }
+.attach button { align-self: flex-start; }
+
+.evidence-list { list-style: none; margin: 0; padding: 0; }
+
+.evidence-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+}
+
+.evidence-name { margin: 0; font-weight: 600; }
+
+.evidence-meta {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  margin: var(--space-1) 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.evidence-note {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.chip {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-ctl);
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.evidence-side {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.sha { color: var(--text-muted); font-size: 11px; }

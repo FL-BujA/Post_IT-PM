@@ -580,6 +580,8 @@ api/routes_reports.py:225: async def create_backup(request: Request, body: Backu
 api/routes_reports.py:241: async def restore(request: Request, body: RestoreBody) -> dict[str, Any]
 api/routes_reports.py:258: async def handover(request: Request, code: str, body: HandoverBody) -> dict[str, Any]
 api/routes_reports.py:273: async def integrity(request: Request) -> dict[str, Any]
+api/routes_ui.py:34: OPENABLE_ROOTS = ('evidence', 'reports')
+api/routes_ui.py:64: async def open_path(request: Request, rel_path: str=Query(..., min_length=1)) -> dict[str, Any]
 api/server.py:18: HOST = '127.0.0.1'
 api/server.py:21: DEFAULT_PORT = 8765
 api/server.py:24: CONFIG_NAME = 'config.json'
